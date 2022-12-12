@@ -1,14 +1,20 @@
 module Main
 
-import Duplication;
-import UnitComplexity;
-import UnitSize;
-import Volume;
+import Metrics::Duplication;
+import Metrics::UnitComplexity;
+import Metrics::UnitSize;
+import Metrics::Volume;
 
 import IO;
 
-int main(list[str] args)
+int main(str arg)
 {
-    println("Metrics");
+	println("Main with arguments");
     return 0;
+}
+
+int main()
+{
+	println("Main empty");
+	return 0;
 }
