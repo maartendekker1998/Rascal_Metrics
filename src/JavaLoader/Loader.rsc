@@ -6,7 +6,14 @@ import lang::java::m3::AST;
 
 import IO;
 
+import SIG::SigModel;
+
 M3 model = createM3FromEclipseProject(|project://JabberPoint/|);
+
+public void initialize()
+{
+	calculate();
+}
 
 public void load()
 {

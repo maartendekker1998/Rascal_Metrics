@@ -1,9 +1,5 @@
 module Main
 
-import Metrics::Duplication;
-import Metrics::UnitComplexity;
-import Metrics::UnitSize;
-import Metrics::Volume;
 import JavaLoader::Loader;
 
 import IO;
@@ -16,6 +12,6 @@ int main(str arg)
 
 int main()
 {
-	println("Main empty");
+	initialize();
 	return 0;
 }
