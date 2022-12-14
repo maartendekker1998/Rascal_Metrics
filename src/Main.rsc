@@ -4,6 +4,7 @@ import Metrics::Duplication;
 import Metrics::UnitComplexity;
 import Metrics::UnitSize;
 import Metrics::Volume;
+import JavaLoader::Loader;
 
 import IO;
 
