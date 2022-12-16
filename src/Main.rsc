@@ -1,8 +1,10 @@
 module Main
 
-import JavaLoader::Loader;
-
 import IO;
+import ProjectLoader::Loader;
+import SIG::SigModel;
+
+loc application = |project://Jabberpoint/|;
 
 int main(str arg)
 {
@@ -12,6 +14,8 @@ int main(str arg)
 
 int main()
 {
-	initialize();
+
+	getSigReport(application);
+		
 	return 0;
 }
