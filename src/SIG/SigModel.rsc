@@ -11,7 +11,7 @@ public str getSigReport(loc application){
 
 	dup6();
 	
-	calculateSIGVolume(application);
+	//calculateSIGVolume(application);
 	
 	return "report placeholder";
 }
