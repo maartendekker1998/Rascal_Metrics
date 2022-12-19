@@ -4,7 +4,7 @@ import IO;
 import ProjectLoader::Loader;
 import SIG::SigModel;
 
-loc application = |project://Jabberpoint/|;
+loc application = |project://JabberPoint/|;
 
 int main(str arg)
 {

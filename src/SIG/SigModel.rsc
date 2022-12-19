@@ -9,7 +9,7 @@ import Metrics::UnitSize;
 // This function will trigger all the metrics and compose the report
 public str getSigReport(loc application){
 
-
+	dup6();
 	
 	calculateSIGVolume(application);
 	
