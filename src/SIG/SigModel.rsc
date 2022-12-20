@@ -9,7 +9,7 @@ import Metrics::UnitSize;
 // This function will trigger all the metrics and compose the report
 public str getSigReport(loc application){
 
-	dup6();
+	calculateSIGDuplicates();
 	
 	//calculateSIGVolume(application);
 	
@@ -22,6 +22,12 @@ public void calculate()
 	//get unit complexity
 	//get duplicate
 	//get unit size
+}
+
+void calculateSIGDuplicates()
+{
+	int percent = calculateDuplication();
+	println("duplicate code: <percent>%");
 }
 
 

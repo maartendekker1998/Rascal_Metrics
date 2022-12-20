@@ -13,12 +13,20 @@ map[int,int] duplicates = ();
 int totalCodeLenth = 0;
 int minimumLength=6;
 
+private void reset()
+{
+    chunkHashes = ();
+    duplicates = ();
+    totalCodeLenth = 0;
+}
+
 private map[int, str] readDup(loc file)
 {
     map[int, str] codes = ();
     int lineNumber = 1;
 	for (line <- readFileLines(file))
     {
+        line = trim(line);
     	if (startsWith(line, "import") || startsWith(line, "package")) continue;//replace with m3 model
     	println("line: <line>");
         codes+=(lineNumber:line);
@@ -27,22 +35,19 @@ private map[int, str] readDup(loc file)
     return codes;
 }
 
-public void dup6()
+public int calculateDuplication()
 {
+    reset();
 	list[loc] files = [|file:///C:/Users/Bart/Desktop/rascal/dupCode.txt|];
     files += |file:///C:/Users/Bart/Desktop/rascal/dupCode2.txt|;
-	for (file <- files)
-	{
-        println(file);
-		calculateDuplication(file);
-	}
-    println("<totalCodeLenth> <size(duplicates)> <duplicates>");
-    int percent = percent(size(duplicates), totalCodeLenth);
-    println("duplicate code: <percent>%");
+	for (file <- files) {println("dsf");calculateDuplicationForFile(file);};
+    println("[debug] : <totalCodeLenth> <size(duplicates)> <percent(size(duplicates), totalCodeLenth)>");
+    return percent(size(duplicates), totalCodeLenth);
 }
 
-public void calculateDuplication(loc file)
+private void calculateDuplicationForFile(loc file)
 {
+    // println(file);
     map[int,str] code = readDup(file);
     for (startLine <- [1..size(code)+1])
     {
