@@ -33,12 +33,11 @@ private void reset()
 	 included in the totalCodeLength for the total percentage
 	 calculation.
 	Parameters:
-	 loc file | 
 	 list[str] code | The code to map
 	 
 	returns a map with linenumber mappings to the corresponding line.
 }
-private map[int, str] mapLines(loc file, list[str] code)
+private map[int, str] mapLines(list[str] code)
 {
     map[int, str] codes = ();
     int lineNumber = 1;
@@ -92,7 +91,7 @@ public int calculateDuplication(loc application)
 {
     reset();
     map[loc, list[str]] files = getFilesPerLocation(application);
-	for (file <- files) calculateDuplicationForFile(file, files[file]);
+	for (file <- files) calculateDuplicationForFile(files[file]);
     println("[debug] : <totalCodeLenth> <size(duplicates)> <percent(size(duplicates), totalCodeLenth)>");
     return percent(size(duplicates), totalCodeLenth);
 }
@@ -106,13 +105,12 @@ public int calculateDuplication(loc application)
 	 those chunks are hashed and stored in a map with the first found line, if a hash later found again
 	 which already exists in the map, then it means a duplicate has been found.
 	Parameters:
-	 loc file | file to check
 	 list[str] code | the code of that file
 }
-private void calculateDuplicationForFile(loc file, list[str] code)
+private void calculateDuplicationForFile(list[str] code)
 {
     // println(file);
-    map[int,str] lineMapping = mapLines(file, code);
+    map[int,str] lineMapping = mapLines(code);
     for (startLine <- [1..size(lineMapping)+1])
     {
     	list[str] chunk = [(lineMapping[line]) | line <- [startLine..(startLine+minimumLength)], (startLine+minimumLength-1) <= size(lineMapping)];
