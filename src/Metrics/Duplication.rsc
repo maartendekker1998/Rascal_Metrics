@@ -6,6 +6,8 @@ import List;
 import String;
 import Relation;
 import util::Math;
+import util::Resources;
+import ProjectLoader::Loader;
 
 map[str,int] chunkHashes = ();
 map[int,int] duplicates = ();
@@ -26,49 +28,71 @@ private void reset()
 
 @doc
 {
-	Returns a map with linenumber mappings to the corresponding line.
+	Maps linenumbers with their corresponding line
 	Import statements are not added to the list, but they are 
 	 included in the totalCodeLength for the total percentage
 	 calculation.
+	Parameters:
+	 loc file | 
+	 list[str] code | The code to map
+	 
+	returns a map with linenumber mappings to the corresponding line.
 }
-private map[int, str] mapLines(loc file)
+private map[int, str] mapLines(loc file, list[str] code)
 {
     map[int, str] codes = ();
     int lineNumber = 1;
-	for (line <- readFileLines(file))
+	for (line <- code)
     {
     	totalCodeLenth+=1;
         line = trim(line);
     	if (startsWith(line, "import")) continue;//replace with m3 model
-    	println("line: <line>");
+    	//println("line: <line>");
         codes+=(lineNumber:line);
         lineNumber+=1;
     }
     return codes;
 }
 
+//@doc
+//{
+//	Obtain files
+//	returns list with files
+//}
+//private list[loc] getFiles()
+//{
+//	list[loc] files = [|file:///G:/rascal/Rascal-OU/dupCode.txt|];
+//    files += |file:///G:/rascal/Rascal-OU/dupCode2.txt|;
+//    return files;
+//}
+
 @doc
 {
-	Obtain files
-	returns list with files
+	Creates a map with files and their lines of code from a project
+	Parameters:
+	 loc application | project
+	returns a map with files and their code
+	
 }
-private list[loc] getFiles()
+public map[loc, list[str]] getFilesPerLocation(loc application)
 {
-	list[loc] files = [|file:///G:/rascal/Rascal-OU/dupCode.txt|];
-    files += |file:///G:/rascal/Rascal-OU/dupCode2.txt|;
-    return files;
+	Resource resource = getResourceFromEclipseProject(application);
+	set[loc] fileLocations = getJavaFileLocationsFromResource(resource);
+	return getJavaFilesFromLocations(fileLocations);
 }
 
 @doc
 {
 	Calculate the final duplication percentage, this calculates ofer all the files provided
+	Parameters:
+	 loc application | project
 	returns integer as the percentage, actual calculation is 'duplicate lines' / 'total lines' * 100
 }
-public int calculateDuplication()
+public int calculateDuplication(loc application)
 {
     reset();
-	list[loc] files = getFiles();
-	for (file <- files) calculateDuplicationForFile(file);
+    map[loc, list[str]] files = getFilesPerLocation(application);
+	for (file <- files) calculateDuplicationForFile(file, files[file]);
     println("[debug] : <totalCodeLenth> <size(duplicates)> <percent(size(duplicates), totalCodeLenth)>");
     return percent(size(duplicates), totalCodeLenth);
 }
@@ -83,11 +107,12 @@ public int calculateDuplication()
 	 which already exists in the map, then it means a duplicate has been found.
 	Parameters:
 	 loc file | file to check
+	 list[str] code | the code of that file
 }
-private void calculateDuplicationForFile(loc file)
+private void calculateDuplicationForFile(loc file, list[str] code)
 {
     // println(file);
-    map[int,str] lineMapping = mapLines(file);
+    map[int,str] lineMapping = mapLines(file, code);
     for (startLine <- [1..size(lineMapping)+1])
     {
     	list[str] chunk = [(lineMapping[line]) | line <- [startLine..(startLine+minimumLength)], (startLine+minimumLength-1) <= size(lineMapping)];
