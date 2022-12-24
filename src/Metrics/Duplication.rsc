@@ -11,7 +11,7 @@ import ProjectLoader::Loader;
 
 map[str,int] chunkHashes = ();
 map[int,int] duplicates = ();
-int totalCodeLenth = 0;
+int totalCodeLength = 0;
 int minimumLength=6;
 
 @doc
@@ -23,7 +23,7 @@ private void reset()
 {
     chunkHashes = ();
     duplicates = ();
-    totalCodeLenth = 0;
+    totalCodeLength = 0;
 }
 
 @doc
@@ -43,7 +43,7 @@ private map[int, str] mapLines(list[str] code)
     int lineNumber = 1;
 	for (line <- code)
     {
-    	totalCodeLenth+=1;
+    	totalCodeLength+=1;
         line = trim(line);
     	if (startsWith(line, "import")) continue;//replace with m3 model
     	//println("line: <line>");
@@ -92,8 +92,8 @@ public int calculateDuplication(loc application)
     reset();
     map[loc, list[str]] files = getFilesPerLocation(application);
 	for (file <- files) calculateDuplicationForFile(files[file]);
-    println("[debug] : <totalCodeLenth> <size(duplicates)> <percent(size(duplicates), totalCodeLenth)>");
-    return percent(size(duplicates), totalCodeLenth);
+    println("[debug] : <totalCodeLength> <size(duplicates)> <percent(size(duplicates), totalCodeLength)>");
+    return percent(size(duplicates), totalCodeLength);
 }
 
 @doc
