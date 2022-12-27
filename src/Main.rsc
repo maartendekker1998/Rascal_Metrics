@@ -3,19 +3,28 @@ module Main
 import IO;
 import ProjectLoader::Loader;
 import SIG::SigModel;
+import Metrics::Volume;
+import String;
+import Type;
+
+
+
+
 
 loc application = |project://JabberPoint/|;
 
-int main(str arg)
+void printMyType(&T a) { println("<typeOf(a)>"); }
+
+
+void main(str arg)
 {
 	println("Main with arguments");
     return 0;
 }
 
-int main()
+void main()
 {
-
-	getSigReport(application);
-		
-	return 0;
+	print(getSigReport(application));
+	
+	
 }
