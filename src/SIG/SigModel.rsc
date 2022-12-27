@@ -47,6 +47,7 @@ void calculateSIGVolume(loc application){
 
 	// get the LOC value
 	int volume = calculateVolume(application);
+	}
 	
 // calculate SIG score
 // compute the SIG rank for the Volume Metric
