@@ -12,7 +12,11 @@ import lang::java::m3::AST;
 // This function will trigger all the metrics and compose the report
 public str getSigReport(loc application){
 
-	int volume = getVolume(application);
+	calculateSIGDuplicates(application);
+	
+	//calculateSIGVolume(application);
+
+  int volume = getVolume(application);
 	
 	// this variable will be used to compute both the analysis for UnitSize and Cyclomatic Complexity
 	list[tuple[Declaration method, int size]] allFunctionsAndSizes = getUnitsAndSize(application);
@@ -22,6 +26,7 @@ public str getSigReport(loc application){
 	report += "lines of code: <volume>" + "\n";
 	report += "number of units: <size(allFunctionsAndSizes)>" + "\n";
 	report += "volume score: <getSIGVolumeRank(volume)>" + "\n";
+
 	
 	return report;
 }
@@ -31,6 +36,19 @@ int getVolume(loc application){
 	return calculateVolume(application);
 }
 
+void calculateSIGDuplicates(loc application){
+	int percent = calculateDuplication(application);
+	println("duplicate code: <percent>%");
+}
+
+
+// this function will invoke metric calculation for Volume and apply the SIG score
+void calculateSIGVolume(loc application){
+
+	// get the LOC value
+	int volume = calculateVolume(application);
+	
+// calculate SIG score
 // compute the SIG rank for the Volume Metric
 str getSIGVolumeRank(int volume){
 	return computeSIGVolumeRank(volume);
