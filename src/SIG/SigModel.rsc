@@ -16,10 +16,12 @@ public str getSigReport(loc application){
 	
 	//calculateSIGVolume(application);
 
-  int volume = getVolume(application);
+  	int volume = getVolume(application);
 	
 	// this variable will be used to compute both the analysis for UnitSize and Cyclomatic Complexity
-	list[tuple[Declaration method, int size]] allFunctionsAndSizes = getUnitsAndSize(application);
+	lrel[Declaration method, int size] allFunctionsAndSizes = getUnitsAndSize(application);
+	
+	calculateSIGUnitSize(allFunctionsAndSizes);
 
 	str report = "";
 	
@@ -41,6 +43,10 @@ void calculateSIGDuplicates(loc application){
 	println("duplicate code: <percent>%");
 }
 
+void calculateSIGUnitSize(lrel[Declaration method, int size] allFunctionsAndSizes)
+{
+	map[str,map[str,int]] unitSize = calculateUnitSize(allFunctionsAndSizes);
+}
 
 // this function will invoke metric calculation for Volume and apply the SIG score
 void calculateSIGVolume(loc application){
@@ -55,7 +61,7 @@ str getSIGVolumeRank(int volume){
 	return computeSIGVolumeRank(volume);
 }
 
-list[tuple[Declaration method, int size]] getUnitsAndSize(loc application){
+lrel[Declaration method, int size] getUnitsAndSize(loc application){
 	return calculateUnitsAndSize(application);
 }
 
