@@ -37,11 +37,11 @@ void calculateSIGVolume(loc application){
 void calculateSIGUnitSize(loc application)
 {
 	map[str,map[str,int]] unitSizes = calculateUnitSize(application);
-	for (x <- unitSizes)
-	{
-		if (contains(x, "SwingWindowHandler"))
-		println("<x> - <unitSizes[x]>");
-	}
+	//for (x <- unitSizes)
+	//{
+	//	if (contains(x, "SwingWindowHandler"))
+	//	println("<x> - <unitSizes[x]>");
+	//}
 }
 
 
