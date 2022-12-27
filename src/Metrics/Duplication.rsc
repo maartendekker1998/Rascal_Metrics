@@ -34,7 +34,6 @@ private void reset()
 	 calculation.
 	Parameters:
 	 list[str] code | The code to map
-	 
 	returns a map with linenumber mappings to the corresponding line.
 }
 private map[int, str] mapLines(list[str] code)
@@ -45,25 +44,12 @@ private map[int, str] mapLines(list[str] code)
     {
     	totalCodeLength+=1;
         line = trim(line);
-    	if (startsWith(line, "import")) continue;//replace with m3 model
-    	//println("line: <line>");
+    	if (startsWith(line, "import")) continue;
         codes+=(lineNumber:line);
         lineNumber+=1;
     }
     return codes;
 }
-
-//@doc
-//{
-//	Obtain files
-//	returns list with files
-//}
-//private list[loc] getFiles()
-//{
-//	list[loc] files = [|file:///G:/rascal/Rascal-OU/dupCode.txt|];
-//    files += |file:///G:/rascal/Rascal-OU/dupCode2.txt|;
-//    return files;
-//}
 
 @doc
 {
@@ -92,7 +78,6 @@ public int calculateDuplication(loc application)
     reset();
     map[loc, list[str]] files = getFilesPerLocation(application);
 	for (file <- files) calculateDuplicationForFile(files[file]);
-    println("[debug] : <totalCodeLength> <size(duplicates)> <percent(size(duplicates), totalCodeLength)>");
     return percent(size(duplicates), totalCodeLength);
 }
 
@@ -109,7 +94,6 @@ public int calculateDuplication(loc application)
 }
 private void calculateDuplicationForFile(list[str] code)
 {
-    // println(file);
     map[int,str] lineMapping = mapLines(code);
     for (startLine <- [1..size(lineMapping)+1])
     {
