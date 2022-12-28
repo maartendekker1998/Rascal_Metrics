@@ -11,7 +11,7 @@ import Type;
 
 
 
-loc application = |project://JabberPoint/|;
+loc application = |project://Jabberpoint/|;
 
 void printMyType(&T a) { println("<typeOf(a)>"); }
 

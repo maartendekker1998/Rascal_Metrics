@@ -7,7 +7,9 @@ import IO;
 import String;
 import Metrics::Volume;
 
+
 public lrel[Declaration method, int size] calculateUnitsAndSize(application){
+
 
 	map[loc, list[LocationDetails]] comments = getComments(application);
 	
@@ -21,9 +23,6 @@ public lrel[Declaration method, int size] calculateUnitsAndSize(application){
 		case function: \method(_, _, _, _, Statement impl): {
 			allFunctionsAndSizes += addFunction(function, comments);
 		}
-		case function: \method(_, _, _, _): {
-			allFunctionsAndSizes += addFunction(function, comments);
-		}
 		case constructor: \constructor(_, _, _, Statement impl):
 		{
 			allFunctionsAndSizes += addFunction(constructor, comments);
@@ -33,7 +32,7 @@ public lrel[Declaration method, int size] calculateUnitsAndSize(application){
 	//for (x <- allFunctionsAndSizes){
 	//	println("<x.method.src><x.method.name> has size <x.size>\n");
 	//}
-	
+
 	return allFunctionsAndSizes;
 }
 

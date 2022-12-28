@@ -14,15 +14,15 @@ public str getSigReport(loc application){
 
 	int duplicationPercent = calculateDuplication(application);
 	
-	//calculateSIGVolume(application);
-
-  	int volume = getVolume(application);
+	int volume = calculateSIGVolume(application);
 	
 	// this variable will be used to compute both the analysis for UnitSize and Cyclomatic Complexity
 	lrel[Declaration method, int size] allFunctionsAndSizes = getUnitsAndSize(application);
 	map[str,real] unitSize = computeSIGUnitSizeRank(allFunctionsAndSizes);
 	
-	str report = "";
+	getCyclomaticComplexity(allFunctionsAndSizes);
+
+  str report = "";
 	
 	report += "lines of code: <volume>" + "\n";
 	report += "number of units: <size(allFunctionsAndSizes)>" + "\n";
@@ -49,19 +49,14 @@ public str getSigReport(loc application){
 	
 	report += "overall maintainability score: \n";
 
+
 	return report;
 }
 
-// invoke metric calculation for Volume and apply the SIG score
-int getVolume(loc application){
-	return calculateVolume(application);
-}
-
 // this function will invoke metric calculation for Volume and apply the SIG score
-void calculateSIGVolume(loc application){
-
+int calculateSIGVolume(loc application){
 	// get the LOC value
-	int volume = calculateVolume(application);
+	return calculateVolume(application);
 }
 	
 // calculate SIG score
@@ -75,5 +70,6 @@ lrel[Declaration method, int size] getUnitsAndSize(loc application){
 }
 
 void getCyclomaticComplexity(allFunctionsAndSizes){
+	getComplexity(allFunctionsAndSizes);
 	return;
 }
