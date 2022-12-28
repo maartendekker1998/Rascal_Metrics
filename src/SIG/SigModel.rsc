@@ -14,12 +14,12 @@ public str getSigReport(loc application){
 
 	calculateSIGDuplicates(application);
 	
-	//calculateSIGVolume(application);
+	int volume = calculateSIGVolume(application);
 
-  int volume = getVolume(application);
-	
 	// this variable will be used to compute both the analysis for UnitSize and Cyclomatic Complexity
-	list[tuple[Declaration method, int size]] allFunctionsAndSizes = getUnitsAndSize(application);
+	lrel[Declaration method, int size] allFunctionsAndSizes = getUnitsAndSize(application);
+	
+	getCyclomaticComplexity(allFunctionsAndSizes);
 
 	str report = "";
 	
@@ -27,13 +27,7 @@ public str getSigReport(loc application){
 	report += "number of units: <size(allFunctionsAndSizes)>" + "\n";
 	report += "volume score: <getSIGVolumeRank(volume)>" + "\n";
 
-	
 	return report;
-}
-
-// invoke metric calculation for Volume and apply the SIG score
-int getVolume(loc application){
-	return calculateVolume(application);
 }
 
 void calculateSIGDuplicates(loc application){
@@ -43,10 +37,10 @@ void calculateSIGDuplicates(loc application){
 
 
 // this function will invoke metric calculation for Volume and apply the SIG score
-void calculateSIGVolume(loc application){
-
+int calculateSIGVolume(loc application){
 	// get the LOC value
-	int volume = calculateVolume(application);
+	return calculateVolume(application);
+}
 	
 // calculate SIG score
 // compute the SIG rank for the Volume Metric
@@ -54,10 +48,11 @@ str getSIGVolumeRank(int volume){
 	return computeSIGVolumeRank(volume);
 }
 
-list[tuple[Declaration method, int size]] getUnitsAndSize(loc application){
+lrel[Declaration method, int size] getUnitsAndSize(loc application){
 	return calculateUnitsAndSize(application);
 }
 
 void getCyclomaticComplexity(allFunctionsAndSizes){
+	getComplexity(allFunctionsAndSizes);
 	return;
 }

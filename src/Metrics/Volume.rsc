@@ -78,7 +78,7 @@ public int calculateLOC(list[str] lines, list[LocationDetails] comments, int sta
 			// This case may only contain code before the '/**'
 			// if the line starts with /** then it is a pure comment and we can skip it
 			
-			if (/^\/\*\*/ := trim(l)) {
+			if (/^\/\*/ := trim(l)) {
 				incrementLineCounter();
 				continue;
 			}
