@@ -7,17 +7,6 @@ import IO;
 import String;
 import Metrics::Volume;
 
-public map[str,map[str,int]] calculateUnitSize(lrel[Declaration method, int size] allFunctionsAndSizes)
-{
-	for (<method,size> <- allFunctionsAndSizes)
-	{
-	;
-		//println (method.src);
-		//if (contains(method.src.uri, "ConcreteSlide")) println("<toLocation(method.src.uri)><method.name>: <size>");
-	}
-	return ();
-}
-
 public lrel[Declaration method, int size] calculateUnitsAndSize(application){
 
 	map[loc, list[LocationDetails]] comments = getComments(application);
@@ -41,9 +30,9 @@ public lrel[Declaration method, int size] calculateUnitsAndSize(application){
 		}
 	}
 	
-	for (x <- allFunctionsAndSizes){
-		println("<x.method.src><x.method.name> has size <x.size>\n");
-	}
+	//for (x <- allFunctionsAndSizes){
+	//	println("<x.method.src><x.method.name> has size <x.size>\n");
+	//}
 	
 	return allFunctionsAndSizes;
 }

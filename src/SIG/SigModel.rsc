@@ -12,7 +12,7 @@ import lang::java::m3::AST;
 // This function will trigger all the metrics and compose the report
 public str getSigReport(loc application){
 
-	calculateSIGDuplicates(application);
+	int duplicationPercent = calculateDuplication(application);
 	
 	//calculateSIGVolume(application);
 
@@ -20,16 +20,35 @@ public str getSigReport(loc application){
 	
 	// this variable will be used to compute both the analysis for UnitSize and Cyclomatic Complexity
 	lrel[Declaration method, int size] allFunctionsAndSizes = getUnitsAndSize(application);
+	map[str,real] unitSize = computeSIGUnitSizeRank(allFunctionsAndSizes);
 	
-	calculateSIGUnitSize(allFunctionsAndSizes);
-
 	str report = "";
 	
 	report += "lines of code: <volume>" + "\n";
 	report += "number of units: <size(allFunctionsAndSizes)>" + "\n";
-	report += "volume score: <getSIGVolumeRank(volume)>" + "\n";
-
+	report += "unit size: \n";
+	report += "  * simple: <unitSize["simple"]>%\n";
+	report += "  * moderate: <unitSize["moderate"]>%\n";
+	report += "  * high: <unitSize["high"]>%\n";
+	report += "  * very high: <unitSize["very high"]>%\n";
+	report += "unit complexity: \n";
+	report += "  * simple: <0>%\n";
+	report += "  * moderate: <0>%\n";
+	report += "  * high: <0>%\n";
+	report += "  * very high: <0>%\n";
+	report += "duplication: <duplicationPercent>%\n\n";
 	
+	report += "volume score: <getSIGVolumeRank(volume)>" + "\n";
+	report += "unit size score: <getSIGUnitSizeRank(unitSize)>\n";
+	report += "unit complexity score: \n";
+	report += "duplication score: <computeSIGDuplicationRank(duplicationPercent)>\n\n";
+	
+	report += "analysability score: \n";
+	report += "changability score: \n";
+	report += "testability score: \n\n";
+	
+	report += "overall maintainability score: \n";
+
 	return report;
 }
 
@@ -38,22 +57,12 @@ int getVolume(loc application){
 	return calculateVolume(application);
 }
 
-void calculateSIGDuplicates(loc application){
-	int percent = calculateDuplication(application);
-	println("duplicate code: <percent>%");
-}
-
-void calculateSIGUnitSize(lrel[Declaration method, int size] allFunctionsAndSizes)
-{
-	map[str,map[str,int]] unitSize = calculateUnitSize(allFunctionsAndSizes);
-}
-
 // this function will invoke metric calculation for Volume and apply the SIG score
 void calculateSIGVolume(loc application){
 
 	// get the LOC value
 	int volume = calculateVolume(application);
-	}
+}
 	
 // calculate SIG score
 // compute the SIG rank for the Volume Metric
