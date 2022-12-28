@@ -1,4 +1,5 @@
 module Metrics::UnitSize
+
 import Helpers::Documentation;
 import DataTypes::LocationDetails;
 import ProjectLoader::Loader;

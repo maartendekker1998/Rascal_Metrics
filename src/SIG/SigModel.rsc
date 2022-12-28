@@ -7,6 +7,7 @@ import Metrics::Volume;
 import Metrics::UnitComplexity;
 import Metrics::Duplication;
 import Metrics::UnitSize;
+import Metrics::UnitTestCoverage;
 import lang::java::m3::AST;
 
 // This function will trigger all the metrics and compose the report
@@ -21,8 +22,10 @@ public str getSigReport(loc application){
 	map[str,real] unitSize = computeSIGUnitSizeRank(allFunctionsAndSizes);
 	
 	getCyclomaticComplexity(allFunctionsAndSizes);
-
-  str report = "";
+	
+	map[str,int] assertions = countAsserts(application);
+	
+    str report = "";
 	
 	report += "lines of code: <volume>" + "\n";
 	report += "number of units: <size(allFunctionsAndSizes)>" + "\n";
@@ -36,8 +39,12 @@ public str getSigReport(loc application){
 	report += "  * moderate: <0>%\n";
 	report += "  * high: <0>%\n";
 	report += "  * very high: <0>%\n";
-	report += "duplication: <duplicationPercent>%\n\n";
+	report += "unit testing:\n";
+	report += "  * asserts: <assertions["assert"]>\n";
+	report += "  * fails: <assertions["fail"]>\n";
 	
+	report += "duplication: <duplicationPercent>%\n\n";
+
 	report += "volume score: <getSIGVolumeRank(volume)>" + "\n";
 	report += "unit size score: <getSIGUnitSizeRank(unitSize)>\n";
 	report += "unit complexity score: \n";
@@ -48,7 +55,6 @@ public str getSigReport(loc application){
 	report += "testability score: \n\n";
 	
 	report += "overall maintainability score: \n";
-
 
 	return report;
 }
