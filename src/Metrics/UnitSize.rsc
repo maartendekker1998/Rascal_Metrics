@@ -7,7 +7,9 @@ import IO;
 import String;
 import Metrics::Volume;
 
-lrel[Declaration method, int size] calculateUnitsAndSize(application){
+
+public lrel[Declaration method, int size] calculateUnitsAndSize(application){
+
 
 	map[loc, list[LocationDetails]] comments = getComments(application);
 	
@@ -15,23 +17,40 @@ lrel[Declaration method, int size] calculateUnitsAndSize(application){
 	
 	set[Declaration] asts = createAstsFromFiles(files, false);
 	
-	lrel[Declaration method, int size] allFunctionsAndSizes = [] ;
+	lrel[Declaration method, int size] allFunctionsAndSizes = [];
 	
 	visit(asts){
 		case function: \method(_, _, _, _, Statement impl): {
-		
-			list[str] function_lines = readFileLines(function.src);				
-			loc function_location = toLocation(function.src.uri);
-			int volume = calculateLOC(function_lines, comments[function_location]?[], function.src.begin.line);
-			lrel[Declaration method, int size] DeclarationAndSize = [<function, volume>];
-			allFunctionsAndSizes += DeclarationAndSize;
+			allFunctionsAndSizes += addFunction(function, comments);
+		}
+		case constructor: \constructor(_, _, _, Statement impl):
+		{
+			allFunctionsAndSizes += addFunction(constructor, comments);
 		}
 	}
 	
 	//for (x <- allFunctionsAndSizes){
-	//	println("<x.method.name> has size <x.size>");
-	//	break;
+	//	println("<x.method.src><x.method.name> has size <x.size>\n");
 	//}
 
 	return allFunctionsAndSizes;
 }
+
+private tuple[Declaration method, int size] addFunction(function, map[loc, list[LocationDetails]] comments)
+{
+	list[str] function_lines = readFileLines(function.src);				
+	loc function_location = toLocation(function.src.uri);
+	int volume = calculateLOC(function_lines, comments[function_location]?[], function.src.begin.line);
+	tuple[Declaration method, int size] DeclarationAndSize = <function, volume>;
+	return DeclarationAndSize;
+}
+
+
+
+
+
+
+
+
+
+
