@@ -12,35 +12,42 @@ import lang::java::m3::AST;
 // This function will trigger all the metrics and compose the report
 public str getSigReport(loc application){
 
+	// Duplication
 	int duplicationPercent = calculateDuplication(application);
 	
+	// Volume
 	int volume = calculateSIGVolume(application);
 	
-	// this variable will be used to compute both the analysis for UnitSize and Cyclomatic Complexity
+	// UnitSize
 	lrel[Declaration method, int size] allFunctionsAndSizes = getUnitsAndSize(application);
 	map[str,real] unitSize = computeSIGUnitSizeRank(allFunctionsAndSizes);
 	
-	getCyclomaticComplexity(allFunctionsAndSizes);
+	// Complexity
+	map[str,real] unitComplexity = computeSIGUnitComplexityRiskCategories(getCyclomaticComplexity(allFunctionsAndSizes));
 
-  str report = "";
+  	str report = "";
 	
 	report += "lines of code: <volume>" + "\n";
+	
 	report += "number of units: <size(allFunctionsAndSizes)>" + "\n";
+	
 	report += "unit size: \n";
 	report += "  * simple: <unitSize["simple"]>%\n";
 	report += "  * moderate: <unitSize["moderate"]>%\n";
 	report += "  * high: <unitSize["high"]>%\n";
 	report += "  * very high: <unitSize["very high"]>%\n";
+	
 	report += "unit complexity: \n";
-	report += "  * simple: <0>%\n";
-	report += "  * moderate: <0>%\n";
-	report += "  * high: <0>%\n";
-	report += "  * very high: <0>%\n";
+	report += "  * simple: <unitComplexity["simple"]>%\n";
+	report += "  * moderate: <unitComplexity["moderate"]>%\n";
+	report += "  * high: <unitComplexity["high"]>%\n";
+	report += "  * very high: <unitComplexity["very high"]>%\n";
+	
 	report += "duplication: <duplicationPercent>%\n\n";
 	
 	report += "volume score: <getSIGVolumeRank(volume)>" + "\n";
 	report += "unit size score: <getSIGUnitSizeRank(unitSize)>\n";
-	report += "unit complexity score: \n";
+	report += "unit complexity score: <getSIGUnitSizeRank(unitComplexity)>\n";
 	report += "duplication score: <computeSIGDuplicationRank(duplicationPercent)>\n\n";
 	
 	report += "analysability score: \n";
@@ -48,7 +55,6 @@ public str getSigReport(loc application){
 	report += "testability score: \n\n";
 	
 	report += "overall maintainability score: \n";
-
 
 	return report;
 }
@@ -69,7 +75,7 @@ lrel[Declaration method, int size] getUnitsAndSize(loc application){
 	return calculateUnitsAndSize(application);
 }
 
-void getCyclomaticComplexity(allFunctionsAndSizes){
-	getComplexity(allFunctionsAndSizes);
-	return;
+lrel[Declaration, int, int] getCyclomaticComplexity(allFunctionsAndSizes){
+	return getComplexity(allFunctionsAndSizes);
+	
 }
