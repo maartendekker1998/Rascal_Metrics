@@ -35,10 +35,7 @@ public str computeSIGVolumeRank(int lines_of_code){
 	}
 }
 
-public str computeSIGDuplicationRank(int percent)
-{
-	return ((percent < 3) ? "++" : ((percent < 5) ? "+" : ((percent < 10) ? "o" : ((percent < 20) ? "-" : "--"))));
-}
+public str computeSIGDuplicationRank(int percent) = ((percent < 3) ? "++" : ((percent < 5) ? "+" : ((percent < 10) ? "o" : ((percent < 20) ? "-" : "--"))));
 
 public map[str,real] computeSIGUnitSizeRank(lrel[Declaration method, int size] allFunctionsAndSizes)
 {
