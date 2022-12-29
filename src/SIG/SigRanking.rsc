@@ -22,7 +22,7 @@ int SIG_MAX_COMPLEXITY_HIGH      = 50;
 alias Rank = tuple[str string_representation, int numeric_representation];
 
 Rank plusplus = <"++",  2>;
-Rank plus     = <"-" ,  1>;
+Rank plus     = <"+" ,  1>;
 Rank neutral  = <"o" ,  0>;
 Rank min      = <"-" , -1>;
 Rank minmin   = <"--", -2>;
