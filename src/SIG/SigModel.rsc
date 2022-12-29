@@ -21,9 +21,9 @@ public str getSigReport(loc application){
 	lrel[Declaration method, int size] allFunctionsAndSizes = getUnitsAndSize(application);
 	map[str,real] unitSize = computeSIGUnitSizeRank(allFunctionsAndSizes);
 	
-	getCyclomaticComplexity(allFunctionsAndSizes);
+	//getCyclomaticComplexity(allFunctionsAndSizes);
 	
-	map[str,int] assertions = countAsserts(application);
+	map[str,int] assertions = calculateUnitTestCoverage(application, allFunctionsAndSizes);
 	
     str report = "";
 	
