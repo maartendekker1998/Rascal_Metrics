@@ -16,7 +16,7 @@ public str getSigReport(loc application){
 	int duplicationPercent = calculateDuplication(application);
 	
 	// Volume
-	int volume = calculateSIGVolume(application);
+	int volume = calculateVolume(application);
 	
 	// UnitSize
 	lrel[Declaration method, int size] allFunctionsAndSizes = getUnitsAndSize(application);
@@ -25,50 +25,54 @@ public str getSigReport(loc application){
 	// Complexity
 	map[str,real] unitComplexity = computeSIGUnitComplexityRiskCategories(getCyclomaticComplexity(allFunctionsAndSizes));
 
-  	str report = "";
+  	str report = "\n";
 	
-	report += "lines of code: <volume>" + "\n";
+	report += "lines of code:   <volume>" + "\n";
 	
-	report += "number of units: <size(allFunctionsAndSizes)>" + "\n";
+	report += "number of units: <size(allFunctionsAndSizes)>" + "\n\n";
 	
 	report += "unit size: \n";
-	report += "  * simple: <unitSize["simple"]>%\n";
-	report += "  * moderate: <unitSize["moderate"]>%\n";
-	report += "  * high: <unitSize["high"]>%\n";
-	report += "  * very high: <unitSize["very high"]>%\n";
+	report += "  * simple:    <unitSize["simple"   ]>%\n";
+	report += "  * moderate:  <unitSize["moderate" ]>%\n";
+	report += "  * high:      <unitSize["high"     ]>%\n";
+	report += "  * very high: <unitSize["very high"]>%\n\n";
 	
 	report += "unit complexity: \n";
-	report += "  * simple: <unitComplexity["simple"]>%\n";
-	report += "  * moderate: <unitComplexity["moderate"]>%\n";
-	report += "  * high: <unitComplexity["high"]>%\n";
-	report += "  * very high: <unitComplexity["very high"]>%\n";
+	report += "  * simple:    <unitComplexity["simple"   ]>%\n";
+	report += "  * moderate:  <unitComplexity["moderate" ]>%\n";
+	report += "  * high:      <unitComplexity["high"     ]>%\n";
+	report += "  * very high: <unitComplexity["very high"]>%\n\n";
 	
 	report += "duplication: <duplicationPercent>%\n\n";
 	
-	report += "volume score: <getSIGVolumeRank(volume)>" + "\n";
-	report += "unit size score: <getSIGUnitSizeRank(unitSize)>\n";
-	report += "unit complexity score: <getSIGUnitSizeRank(unitComplexity)>\n";
-	report += "duplication score: <computeSIGDuplicationRank(duplicationPercent)>\n\n";
+	Rank volumeRank         = getSIGVolumeRank(volume);
+	Rank unitSizeRank       = getSIGUnitSizeRank(unitSize);
+	Rank unitComplexityRank = getSIGUnitSizeRank(unitComplexity);
+	Rank duplicationRank    = getSIGDuplicationRank(duplicationPercent);
 	
-	report += "analysability score: \n";
-	report += "changability score: \n";
-	report += "testability score: \n\n";
+	report += "volume score: <volumeRank.string_representation>" + "\n";
+	report += "unit size score: <unitSizeRank.string_representation>\n";
+	report += "unit complexity score: <unitComplexityRank.string_representation>\n";
+	report += "duplication score: <duplicationRank.string_representation>\n\n";
 	
-	report += "overall maintainability score: \n";
+	list[Rank] analyzabilityArguments = [volumeRank, duplicationRank, unitSizeRank];
+	list[Rank] changeabilityArguments = [unitComplexityRank, duplicationRank];
+	list[Rank] testabilityArguments   = [unitComplexityRank, unitSizeRank];
+	
+	Rank analyzebilityRank = calculateWeigedAverage(analyzabilityArguments);
+	Rank changeabilityRank = calculateWeigedAverage(changeabilityArguments);
+	Rank testabilityRank   = calculateWeigedAverage(testabilityArguments);
+	
+	report += "analysability score: <analyzebilityRank.string_representation>\n";
+	report += "changability score: <changeabilityRank.string_representation>\n";
+	report += "testability score: <testabilityRank.string_representation>\n\n";
+	
+	list[Rank] overallArguments = [analyzebilityRank, changeabilityRank, testabilityRank];
+	Rank overallRank = calculateWeigedAverage(overallArguments);
+	
+	report += "overall maintainability score: <overallRank.string_representation>\n";
 
 	return report;
-}
-
-// this function will invoke metric calculation for Volume and apply the SIG score
-int calculateSIGVolume(loc application){
-	// get the LOC value
-	return calculateVolume(application);
-}
-	
-// calculate SIG score
-// compute the SIG rank for the Volume Metric
-str getSIGVolumeRank(int volume){
-	return computeSIGVolumeRank(volume);
 }
 
 lrel[Declaration method, int size] getUnitsAndSize(loc application){
