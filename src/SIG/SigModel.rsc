@@ -13,69 +13,77 @@ import lang::java::m3::AST;
 // This function will trigger all the metrics and compose the report
 public str getSigReport(loc application){
 
+	// Duplication
 	int duplicationPercent = calculateDuplication(application);
 	
-	int volume = calculateSIGVolume(application);
+	// Volume
+	int volume = calculateVolume(application);
 	
-	// this variable will be used to compute both the analysis for UnitSize and Cyclomatic Complexity
+	// UnitSize
 	lrel[Declaration method, int size] allFunctionsAndSizes = getUnitsAndSize(application);
 	map[str,real] unitSize = computeSIGUnitSizeRank(allFunctionsAndSizes);
+  map[str,int] assertions = calculateUnitTestCoverage(application, allFunctionsAndSizes);	
+
+	// Complexity
+	map[str,real] unitComplexity = computeSIGUnitComplexityRiskCategories(getCyclomaticComplexity(allFunctionsAndSizes));
+
+  str report = "\n";
 	
-	//getCyclomaticComplexity(allFunctionsAndSizes);
+	report += "lines of code:   <volume>" + "\n";
+	report += "number of units: <size(allFunctionsAndSizes)>" + "\n\n";
 	
-	map[str,int] assertions = calculateUnitTestCoverage(application, allFunctionsAndSizes);
-	
-    str report = "";
-	
-	report += "lines of code: <volume>" + "\n";
-	report += "number of units: <size(allFunctionsAndSizes)>" + "\n";
 	report += "unit size: \n";
-	report += "  * simple: <unitSize["simple"]>%\n";
-	report += "  * moderate: <unitSize["moderate"]>%\n";
-	report += "  * high: <unitSize["high"]>%\n";
-	report += "  * very high: <unitSize["very high"]>%\n";
+	report += "  * simple:    <unitSize["simple"   ]>%\n";
+	report += "  * moderate:  <unitSize["moderate" ]>%\n";
+	report += "  * high:      <unitSize["high"     ]>%\n";
+	report += "  * very high: <unitSize["very high"]>%\n\n";
+	
 	report += "unit complexity: \n";
-	report += "  * simple: <0>%\n";
-	report += "  * moderate: <0>%\n";
-	report += "  * high: <0>%\n";
-	report += "  * very high: <0>%\n";
+
+	report += "  * simple:    <unitComplexity["simple"   ]>%\n";
+	report += "  * moderate:  <unitComplexity["moderate" ]>%\n";
+	report += "  * high:      <unitComplexity["high"     ]>%\n";
+	report += "  * very high: <unitComplexity["very high"]>%\n\n";
 	report += "unit testing:\n";
 	report += "  * asserts: <assertions["assert"]>\n";
 	report += "  * fails: <assertions["fail"]>\n";
-	
 	report += "duplication: <duplicationPercent>%\n\n";
-
-	report += "volume score: <getSIGVolumeRank(volume)>" + "\n";
-	report += "unit size score: <getSIGUnitSizeRank(unitSize)>\n";
-	report += "unit complexity score: \n";
-	report += "duplication score: <computeSIGDuplicationRank(duplicationPercent)>\n\n";
 	
-	report += "analysability score: \n";
-	report += "changability score: \n";
-	report += "testability score: \n\n";
+	Rank volumeRank         = getSIGVolumeRank(volume);
+	Rank unitSizeRank       = getSIGUnitSizeRank(unitSize);
+	Rank unitComplexityRank = getSIGUnitSizeRank(unitComplexity);
+	Rank duplicationRank    = getSIGDuplicationRank(duplicationPercent);
 	
-	report += "overall maintainability score: \n";
+	report += "volume score: <volumeRank.string_representation>" + "\n";
+	report += "unit size score: <unitSizeRank.string_representation>\n";
+	report += "unit complexity score: <unitComplexityRank.string_representation>\n";
+	report += "duplication score: <duplicationRank.string_representation>\n\n";
+	
+	list[Rank] analyzabilityArguments = [volumeRank, duplicationRank, unitSizeRank];
+	list[Rank] changeabilityArguments = [unitComplexityRank, duplicationRank];
+	list[Rank] testabilityArguments   = [unitComplexityRank, unitSizeRank];
+	
+	Rank analyzebilityRank = calculateWeigedAverage(analyzabilityArguments);
+	Rank changeabilityRank = calculateWeigedAverage(changeabilityArguments);
+	Rank testabilityRank   = calculateWeigedAverage(testabilityArguments);
+	
+	report += "analysability score: <analyzebilityRank.string_representation>\n";
+	report += "changability score: <changeabilityRank.string_representation>\n";
+	report += "testability score: <testabilityRank.string_representation>\n\n";
+	
+	list[Rank] overallArguments = [analyzebilityRank, changeabilityRank, testabilityRank];
+	Rank overallRank = calculateWeigedAverage(overallArguments);
+	
+	report += "overall maintainability score: <overallRank.string_representation>\n";
 
 	return report;
-}
-
-// this function will invoke metric calculation for Volume and apply the SIG score
-int calculateSIGVolume(loc application){
-	// get the LOC value
-	return calculateVolume(application);
-}
-	
-// calculate SIG score
-// compute the SIG rank for the Volume Metric
-str getSIGVolumeRank(int volume){
-	return computeSIGVolumeRank(volume);
 }
 
 lrel[Declaration method, int size] getUnitsAndSize(loc application){
 	return calculateUnitsAndSize(application);
 }
 
-void getCyclomaticComplexity(allFunctionsAndSizes){
-	getComplexity(allFunctionsAndSizes);
-	return;
+lrel[Declaration, int, int] getCyclomaticComplexity(allFunctionsAndSizes){
+	return getComplexity(allFunctionsAndSizes);
+	
 }

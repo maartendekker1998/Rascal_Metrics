@@ -3,18 +3,26 @@ module Metrics::UnitComplexity
 import IO;
 import lang::java::m3::AST;
 
-public void getComplexity(lrel[Declaration method, int size] allFunctionsAndSizes){
+public lrel[Declaration, int, int] getComplexity(lrel[Declaration method, int size] allFunctionsAndSizes){
+
+	lrel[Declaration method, int size, int complexity] allFunctionsWithSizeAndComplexity = [];
 	
-	for(fns <- allFunctionsAndSizes){
-		computeComplexity(fns.method);
-	}	
+	for(f <- allFunctionsAndSizes){
+		int cc = computeComplexity(f.method);
+		allFunctionsWithSizeAndComplexity += <f.method, f.size, cc>;
+	}
 	
-	return;
+	//for(x <- allFunctionsWithSizeAndComplexity){
+	//	println("Method <x.method.name> with size <x.size> has complexity <x.complexity>\n");
+	//}
+	
+	return allFunctionsWithSizeAndComplexity;
 }
 
 int computeComplexity(Declaration method){
 	
-	//https://stackoverflow.com/questions/40064886/obtaining-cyclomatic-complexity/40069656#40069656
+	// Posted by Rascal Core Developer
+	// https://stackoverflow.com/questions/40064886/obtaining-cyclomatic-complexity/40069656#40069656
 	
 	int result = 1;
     visit (method.impl) {
