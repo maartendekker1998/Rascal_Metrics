@@ -7,6 +7,7 @@ import Metrics::Volume;
 import Metrics::UnitComplexity;
 import Metrics::Duplication;
 import Metrics::UnitSize;
+import Metrics::UnitTestCoverage;
 import lang::java::m3::AST;
 
 // This function will trigger all the metrics and compose the report
@@ -21,14 +22,14 @@ public str getSigReport(loc application){
 	// UnitSize
 	lrel[Declaration method, int size] allFunctionsAndSizes = getUnitsAndSize(application);
 	map[str,real] unitSize = computeSIGUnitSizeRank(allFunctionsAndSizes);
-	
+  map[str,int] assertions = calculateUnitTestCoverage(application, allFunctionsAndSizes);	
+
 	// Complexity
 	map[str,real] unitComplexity = computeSIGUnitComplexityRiskCategories(getCyclomaticComplexity(allFunctionsAndSizes));
 
-  	str report = "\n";
+  str report = "\n";
 	
 	report += "lines of code:   <volume>" + "\n";
-	
 	report += "number of units: <size(allFunctionsAndSizes)>" + "\n\n";
 	
 	report += "unit size: \n";
@@ -38,11 +39,14 @@ public str getSigReport(loc application){
 	report += "  * very high: <unitSize["very high"]>%\n\n";
 	
 	report += "unit complexity: \n";
+
 	report += "  * simple:    <unitComplexity["simple"   ]>%\n";
 	report += "  * moderate:  <unitComplexity["moderate" ]>%\n";
 	report += "  * high:      <unitComplexity["high"     ]>%\n";
 	report += "  * very high: <unitComplexity["very high"]>%\n\n";
-	
+	report += "unit testing:\n";
+	report += "  * asserts: <assertions["assert"]>\n";
+	report += "  * fails: <assertions["fail"]>\n";
 	report += "duplication: <duplicationPercent>%\n\n";
 	
 	Rank volumeRank         = getSIGVolumeRank(volume);
