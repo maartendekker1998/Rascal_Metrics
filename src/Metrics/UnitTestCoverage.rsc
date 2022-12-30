@@ -1,20 +1,13 @@
 module Metrics::UnitTestCoverage
 
-import IO;
-import Map;
-import Relation;
-import List;
-import String;
-import util::Resources;
 import lang::java::m3::AST;
 import ProjectLoader::Loader;
-import lang::java::jdt::m3::Core;
 
 map[loc,Declaration] unitTestFiles = ();
-map[loc,Declaration] allFiles = ();
 
 public map[str,int] calculateUnitTestCoverage(loc application, lrel[Declaration method, int size] allFunctionsAndSizes)
 {
+	unitTestFiles = ();
 	map[str,int] unitTestCoverage = countAsserts(application);
 	unitTestCoverage += calculateCoverage();
 	return unitTestCoverage;
@@ -39,10 +32,6 @@ private map[str,int] countAsserts(loc application)
 			{
 				unitTestFiles+=(ast.src:ast);
 				fails+=1;
-			}
-			default: 
-			{
-				allFiles+=(ast.src:ast);
 			}
 		}
 	}
