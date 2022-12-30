@@ -1,0 +1,36 @@
+hsqldb
+----
+
+lines of code:   163386
+number of units: 9725
+
+unit size: 
+  * simple:    28.2%
+  * moderate:  19.7%
+  * high:      19.7%
+  * very high: 32.2%
+
+unit complexity: 
+  * simple:    63.7%
+  * moderate:  14.8%
+  * high:      12.1%
+  * very high: 9.1%
+
+unit testing:
+  * asserts:   688
+  * fails:     158
+  * unittests: 547
+
+duplication: 2%
+
+volume score: +
+unit size score: --
+unit complexity score: --
+duplication score: ++
+
+analysability score: o
+changability score: o
+testability score: --
+
+overall maintainability score: o
+Execution time: 00:01:26

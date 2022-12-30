@@ -1,0 +1,36 @@
+smallsql
+----
+
+lines of code:   24050
+number of units: 2337
+
+unit size: 
+  * simple:    44.5%
+  * moderate:  21.6%
+  * high:      16.6%
+  * very high: 17.1%
+
+unit complexity: 
+  * simple:    73.9%
+  * moderate:  8.3%
+  * high:      11.8%
+  * very high: 5.9%
+
+unit testing:
+  * asserts:   748
+  * fails:     44
+  * unittests: 237
+
+duplication: 2%
+
+volume score: ++
+unit size score: --
+unit complexity score: --
+duplication score: ++
+
+analysability score: o
+changability score: o
+testability score: --
+
+overall maintainability score: o
+Execution time: 00:00:12
