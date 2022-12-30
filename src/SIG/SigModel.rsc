@@ -22,13 +22,15 @@ public str getSigReport(loc application){
 	// UnitSize
 	lrel[Declaration method, int size] allFunctionsAndSizes = getUnitsAndSize(application);
 	map[str,real] unitSize = computeSIGUnitSizeRank(allFunctionsAndSizes);
+	
+	// Unit tests
 	map[str,int] assertions = calculateUnitTestCoverage(application, allFunctionsAndSizes);	
 
 	// Complexity
 	map[str,real] unitComplexity = computeSIGUnitComplexityRiskCategories(getCyclomaticComplexity(allFunctionsAndSizes));
 
-	str report = "\n";
-	
+	str report = "<application.authority>\n";
+	report += "----\n\n";
 	report += "lines of code:   <volume>\n";
 	report += "number of units: <size(allFunctionsAndSizes)>\n\n";
 	
@@ -47,7 +49,7 @@ public str getSigReport(loc application){
 	report += "unit testing:\n";
 	report += "  * asserts: <assertions["assert"]>\n";
 	report += "  * fails: <assertions["fail"]>\n";
-	report += "  * unit tests: <assertions["tests"]>\n";
+	report += "  * unit tests: <assertions["tests"]>\n\n";
 	report += "duplication: <duplicationPercent>%\n\n";
 	
 	Rank volumeRank         = getSIGVolumeRank(volume);
@@ -57,7 +59,7 @@ public str getSigReport(loc application){
 	
 	report += "volume score: <volumeRank.string_representation>" + "\n";
 	report += "unit size score: <unitSizeRank.string_representation>\n";
-	report += "unit complexity score: <unitComplexityRank.string_representation>\n\n";
+	report += "unit complexity score: <unitComplexityRank.string_representation>\n";
 	report += "duplication score: <duplicationRank.string_representation>\n\n";
 	
 	list[Rank] analyzabilityArguments = [volumeRank, duplicationRank, unitSizeRank];
