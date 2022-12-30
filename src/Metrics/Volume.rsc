@@ -1,7 +1,5 @@
 module Metrics::Volume
 
-import IO;
-import List;
 import String;
 import lang::java::jdt::m3::Core;
 import ProjectLoader::Loader;

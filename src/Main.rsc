@@ -5,11 +5,10 @@ import ProjectLoader::Loader;
 import SIG::SigModel;
 import Metrics::Volume;
 import String;
-import Type;
 import util::Benchmark;
 import util::Math;
 
-loc application = |project://hsqldb/|;
+loc application = |project://JabberPoint/|;
 
 void main(str arg)
 {

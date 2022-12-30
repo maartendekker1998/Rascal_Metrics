@@ -1,6 +1,5 @@
 module SIG::SigRanking
 
-import IO;
 import String;
 import util::Math;
 import lang::java::m3::AST;
