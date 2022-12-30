@@ -47,9 +47,9 @@ public str getSigReport(loc application){
 	report += "  * high:      <unitComplexity["high"     ]>%\n";
 	report += "  * very high: <unitComplexity["very high"]>%\n\n";
 	report += "unit testing:\n";
-	report += "  * asserts: <assertions["assert"]>\n";
-	report += "  * fails: <assertions["fail"]>\n";
-	report += "  * unit tests: <assertions["tests"]>\n\n";
+	report += "  * asserts:   <assertions["assert"]>\n";
+	report += "  * fails:     <assertions["fail"]>\n";
+	report += "  * unittests: <assertions["tests"]>\n\n";
 	report += "duplication: <duplicationPercent>%\n\n";
 	
 	Rank volumeRank         = getSIGVolumeRank(volume);
