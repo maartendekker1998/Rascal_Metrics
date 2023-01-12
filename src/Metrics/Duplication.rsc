@@ -9,8 +9,11 @@ import util::Math;
 import util::Resources;
 import ProjectLoader::Loader;
 
-map[str,map[str,int]] chunkHashes = ();
-map[int,map[str,int]] duplicates = ();
+alias Duplicate = tuple[list[map[str,int]] src, list[map[str,int]] matches];
+alias P = tuple[str file, int line];
+
+map[str,P] chunkHashes = ();
+list[Duplicate] duplicates = [];
 int totalCodeLength = 0;
 int minimumLength=6;
 
@@ -22,7 +25,7 @@ int minimumLength=6;
 private void reset()
 {
     chunkHashes = ();
-    duplicates = ();
+    duplicates = [];
     totalCodeLength = 0;
 }
 
@@ -76,7 +79,10 @@ public int calculateDuplication(loc application)
 {
     reset();
     map[loc, list[str]] files = getFilesPerLocation(application);
-	for (file <- files) calculateDuplicationForFile(files[file], file.file);
+	for (file <- files) {calculateDuplicationForFile(files[file], file.file);
+		if (size(duplicates) > 0)
+		break;
+	}
     return percent(size(duplicates), totalCodeLength);
 }
 
@@ -93,16 +99,28 @@ public int calculateDuplication(loc application)
 }
 private void calculateDuplicationForFile(list[str] code, str file)
 {
+	println("<file>");
     map[int,str] lineMapping = mapLines(code);
     for (startLine <- [1..size(lineMapping)+1])
     {
     	list[str] chunk = [(lineMapping[line]) | line <- [startLine..(startLine+minimumLength)], (startLine+minimumLength-1) <= size(lineMapping), !startsWith(lineMapping[line], "import")];
         if (size(chunk) != minimumLength) continue;
         str hash = md5Hash(chunk);
-        if (hash notin(chunkHashes)) chunkHashes+=(hash:(file:startLine));
+        if (hash notin(chunkHashes)) chunkHashes+=(hash:<file, startLine>);
         else
         {
-			for (i <- [0..minimumLength]) duplicates+=(startLine+i:(file:0));
+        	Duplicate d = <[],[]>;
+			for (i <- [0..minimumLength])
+			{
+				list[map[str,int]] m = d.matches;
+				list[map[str,int]] s = d.src;
+				str f = chunkHashes[hash].file;
+				d.src = s+=(f:chunkHashes[hash].line+i);
+				d.matches = m+=(file:startLine+i);
+				//duplicates+=(startLine+i:(file:0));
+				duplicates+=d;
+			}
+			println("<d>");
         }
     }
 }
