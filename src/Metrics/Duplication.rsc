@@ -9,8 +9,8 @@ import util::Math;
 import util::Resources;
 import ProjectLoader::Loader;
 
-map[str,int] chunkHashes = ();
-map[int,int] duplicates = ();
+map[str,map[str,int]] chunkHashes = ();
+map[int,map[str,int]] duplicates = ();
 int totalCodeLength = 0;
 int minimumLength=6;
 
@@ -44,7 +44,6 @@ private map[int, str] mapLines(list[str] code)
     {
     	totalCodeLength+=1;
         line = trim(line);
-    	if (startsWith(line, "import")) continue;
         codes+=(lineNumber:line);
         lineNumber+=1;
     }
@@ -77,7 +76,7 @@ public int calculateDuplication(loc application)
 {
     reset();
     map[loc, list[str]] files = getFilesPerLocation(application);
-	for (file <- files) calculateDuplicationForFile(files[file]);
+	for (file <- files) calculateDuplicationForFile(files[file], file.file);
     return percent(size(duplicates), totalCodeLength);
 }
 
@@ -92,18 +91,18 @@ public int calculateDuplication(loc application)
 	Parameters:
 	 list[str] code | the code of that file
 }
-private void calculateDuplicationForFile(list[str] code)
+private void calculateDuplicationForFile(list[str] code, str file)
 {
     map[int,str] lineMapping = mapLines(code);
     for (startLine <- [1..size(lineMapping)+1])
     {
-    	list[str] chunk = [(lineMapping[line]) | line <- [startLine..(startLine+minimumLength)], (startLine+minimumLength-1) <= size(lineMapping)];
-        if (isEmpty(chunk)) continue;
+    	list[str] chunk = [(lineMapping[line]) | line <- [startLine..(startLine+minimumLength)], (startLine+minimumLength-1) <= size(lineMapping), !startsWith(lineMapping[line], "import")];
+        if (size(chunk) != minimumLength) continue;
         str hash = md5Hash(chunk);
-        if (hash notin(chunkHashes)) chunkHashes+=(hash:startLine);
+        if (hash notin(chunkHashes)) chunkHashes+=(hash:(file:startLine));
         else
         {
-			for (i <- [0..minimumLength]) duplicates+=(startLine+i:0);
+			for (i <- [0..minimumLength]) duplicates+=(startLine+i:(file:0));
         }
     }
 }
