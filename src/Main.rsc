@@ -7,6 +7,7 @@ import Metrics::Volume;
 import String;
 import util::Benchmark;
 import util::Math;
+import Vizualisation::Dashboard;
 
 loc application = |project://JabberPoint/|;
 
@@ -28,3 +29,11 @@ void main()
 	int seconds = endTime % 60;
 	println("Execution time: <formatDate(hours)>:<formatDate(minutes)>:<formatDate(seconds)>");
 }
+
+public void render()
+{
+	renderDashboard();
+}
+
+
+
