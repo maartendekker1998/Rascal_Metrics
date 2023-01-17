@@ -7,8 +7,9 @@ import Metrics::Volume;
 import String;
 import util::Benchmark;
 import util::Math;
+import Visualisation::tree_visual;
 
-loc application = |project://JabberPoint/|;
+loc application = |project://Jabberpoint/|;
 
 void main(str arg)
 {
@@ -20,11 +21,12 @@ private str formatDate(int x) = size(toString(x)) == 1 ? "0<x>" : "<x>";
 
 void main()
 {
-	int startTime = realTime();
-	print(getSigReport(application));
-	int endTime = ((realTime()-startTime)/1000);
-	int hours = endTime / 3600;
-	int minutes = (endTime % 3600) /60;
-	int seconds = endTime % 60;
-	println("Execution time: <formatDate(hours)>:<formatDate(minutes)>:<formatDate(seconds)>");
+	//int startTime = realTime();
+	//print(getSigReport(application));
+	//int endTime = ((realTime()-startTime)/1000);
+	//int hours = endTime / 3600;
+	//int minutes = (endTime % 3600) /60;
+	//int seconds = endTime % 60;
+	//println("Execution time: <formatDate(hours)>:<formatDate(minutes)>:<formatDate(seconds)>");
+	visualize(application);
 }
