@@ -13,7 +13,7 @@ list[Figure] metricsHeader;
 public void renderDashboard()
 {
 	currentPage = "dashboard";
-	Color headerColor = rgb(234,221,202);
+	Color headerColor = rgb(0x2E,0x34,0x40);
    	list[Figure] dashboardHeader =
    	[
    		box(fillColor(headerColor),lineColor(headerColor),vshrink(0.1),onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("dashboard");return true;})),
@@ -21,7 +21,7 @@ public void renderDashboard()
 	];
 	metricsHeader =
    	[
-   		box(text("Back to dashboard",halign(0.02)),fillColor(headerColor),lineColor(headerColor),vshrink(0.1),onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("dashboard");return true;}))
+   		box(text("Back to dashboard",halign(0.02),fontColor(rgb(0xff,0xff,0xff))),fillColor(headerColor),lineColor(headerColor),vshrink(0.1),onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("dashboard");return true;}))
 	];
 	list[Figure] metricRowTop =
 	[
@@ -55,14 +55,21 @@ private void switchPage(str pageToSwitchTo)
 
 private Figure createDuplication()
 {
-	Figure src = box(text("SourceFile.java", textAngle(270)), fillColor(rgb(225,225,225)), renderPopup("SourceFile.java"));
-	list[Figure] destinations = [];
-	for (x <- [1..5]) // get from actual duplication data
+	list[Figure] graphs = [];
+	Color g = rgb(0xd8,0xde,0xe9);
+	for(d <- [1..13]) // get from duplication of all files
 	{
-		destinations+=box(text("File<x>.java", textAngle(270)), fillColor(rgb(125,125,125)), renderPopup("File<x>.java"));
+		Figure src = box(text("SourceFile<d>.java", textAngle(270)), fillColor(rgb(225,225,225)), renderPopup("SourceFile<d>.java"));
+		list[Figure] destinations = [];
+		for (x <- [1..5]) // get from actual duplications per file
+		{
+			destinations+=box(text("File<x>.java", textAngle(270)), fillColor(rgb(125,125,125)), renderPopup("File<x>.java"));
+		}
+		Figure duplicate = tree(src,destinations,left(),gap(20));
+		graphs+=box(duplicate, fillColor(g), lineColor(g));
 	}
-	Figure duplicate = tree(src,destinations,left(),gap(20));
-	return grid([metricsHeader,[space()],[duplicate]]);
+	duplicates = box(hcat(graphs, hgap(20)), fillColor(g), lineColor(g));
+	return grid([metricsHeader, [duplicates]]);
 }
 
 private Figure createUnitSize()
