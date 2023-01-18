@@ -9,11 +9,12 @@ import util::Math;
 import util::Resources;
 import ProjectLoader::Loader;
 
-alias Duplicate = tuple[list[map[str,int]] src, list[map[str,int]] matches];
+alias Duplicate = tuple[map[str,list[int]] src, map[str,list[int]] matches];
 alias P = tuple[str file, int line];
 
 map[str,P] chunkHashes = ();
 list[Duplicate] duplicates = [];
+map[int,int] duplicates2 = ();
 int totalCodeLength = 0;
 int minimumLength=6;
 
@@ -80,10 +81,23 @@ public int calculateDuplication(loc application)
     reset();
     map[loc, list[str]] files = getFilesPerLocation(application);
 	for (file <- files) {calculateDuplicationForFile(files[file], file.file);
-		if (size(duplicates) > 0)
-		break;
+		//if (size(duplicates) > 0)
+		//break;
 	}
-    return percent(size(duplicates), totalCodeLength);
+	int i = 0;
+	for (d <- duplicates)
+	{
+		for (x <- d.src)
+		{
+			println(d.src[x]);
+			i+=size(d.src[x]);
+		}
+	}
+	println(i);
+	println(duplicates2);
+	println(size(duplicates2));
+	println(totalCodeLength);
+    return percent(size(duplicates2), totalCodeLength);
 }
 
 @doc
@@ -99,6 +113,7 @@ public int calculateDuplication(loc application)
 }
 private void calculateDuplicationForFile(list[str] code, str file)
 {
+	Duplicate d = <(),()>;
 	println("<file>");
     map[int,str] lineMapping = mapLines(code);
     for (startLine <- [1..size(lineMapping)+1])
@@ -109,20 +124,18 @@ private void calculateDuplicationForFile(list[str] code, str file)
         if (hash notin(chunkHashes)) chunkHashes+=(hash:<file, startLine>);
         else
         {
-        	Duplicate d = <[],[]>;
+        	for (i <- [0..minimumLength]) duplicates2+=(startLine+i:0);
 			for (i <- [0..minimumLength])
 			{
-				list[map[str,int]] m = d.matches;
-				list[map[str,int]] s = d.src;
-				str f = chunkHashes[hash].file;
-				d.src = s+=(f:chunkHashes[hash].line+i);
-				d.matches = m+=(file:startLine+i);
-				//duplicates+=(startLine+i:(file:0));
-				duplicates+=d;
+				if (file notin(d.matches)) d.matches+=(file:[]);
+				if (startLine+i notin(d.matches[file])) d.matches[file]+=startLine+i;
+				if (chunkHashes[hash].file notin(d.src)) d.src+=(chunkHashes[hash].file:[]);
+				if (chunkHashes[hash].line+i notin(d.src[chunkHashes[hash].file])) d.src[chunkHashes[hash].file]+=chunkHashes[hash].line+i;
 			}
-			println("<d>");
         }
     }
+    if (size(d.src) > 0) duplicates+=d;
+    //println("<d>");
 }
 
 
