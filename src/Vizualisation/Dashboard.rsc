@@ -6,6 +6,8 @@ import vis::Render;
 import vis::KeySym;
 
 map[str,Figure] pages = ();
+alias DuplicationFigure = tuple[str src, list[str] files];
+map[Figure,DuplicationFigure] duplicationFigure = ();
 str currentPage;
 
 list[Figure] metricsHeader;
@@ -57,25 +59,42 @@ private Figure createDuplication()
 {
 	list[Figure] graphs = [];
 	Color g = rgb(0xd8,0xde,0xe9);
-	for(d <- [1..13]) // get from duplication of all files
+	for(d <- [1..40]) // get from duplication of all files
 	{
-		Figure src = box(text("SourceFile<d>.java", textAngle(270)), fillColor(rgb(225,225,225)), renderPopup("SourceFile<d>.java"));
-		list[Figure] destinations = [];
+		Figure src = box(text("<d>", textAngle(270)), fillColor(rgb(225,225,225)), renderPopup("SourceFile<d>.java"));
+		list[str] destinations = [];
 		for (x <- [1..5]) // get from actual duplications per file
 		{
-			destinations+=box(text("File<x>.java", textAngle(270)), fillColor(rgb(125,125,125)), renderPopup("File<x>.java"));
+			destinations+="<x>";
+			//destinations+=box(text("File<x>.java", textAngle(270)), fillColor(rgb(125,125,125)), renderPopup("File<x>.java"));
 		}
-		Figure duplicate = tree(src,destinations,left(),gap(20));
-		graphs+=box(duplicate, fillColor(g), lineColor(g));
+		//Figure duplicate = box(tree(src,destinations,left(),gap(20)));
+		duplicationFigure+=(src:<"<d>",destinations>);
+		graphs+=box(box(), onMouseDown(bool(int b,map[KeyModifier,bool]m){spawnDetails(src);return true;}));
 	}
-	duplicates = box(hcat(graphs, hgap(20)), fillColor(g), lineColor(g));
+	//duplicates = box(hcat(graphs, hgap(20)), fillColor(g), lineColor(g));
+	duplicates = treemap(graphs);
 	return grid([metricsHeader, [duplicates]]);
+}
+
+private void spawnDetails(Figure file)
+{
+	DuplicationFigure d = duplicationFigure[file];
+	println(d.src);
+	for (i <- d.files)
+	{
+		println("  <i>");
+	}
 }
 
 private Figure createUnitSize()
 {
-	unitSize = box(text("Unit size"),fillColor("LightGreen"));
-	return grid([metricsHeader,[unitSize]]);
+	l = [];
+	for (x <- [0..500])
+	{
+		l+=box();
+	}
+	return grid([metricsHeader, [treemap(l)]]);
 }
 
 private Figure createUnitComplexity()
