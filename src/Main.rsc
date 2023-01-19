@@ -9,7 +9,7 @@ import util::Benchmark;
 import util::Math;
 import Visualisation::tree_visual;
 
-loc application = |project://Jabberpoint/|;
+loc application = |project://smallsql/|;
 
 void main(str arg)
 {

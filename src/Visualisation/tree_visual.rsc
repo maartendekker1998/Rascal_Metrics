@@ -61,12 +61,29 @@ public void updateFT(list[str] path, FileTree actual_file){
 	}
 }
 
+int SIG_MAX_COMPLEXITY_LOW       = 10;
+int SIG_MAX_COMPLEXITY_MODERATE  = 20;
+int SIG_MAX_COMPLEXITY_HIGH      = 50;
+
+public str getComplexityColor(int cc){
+
+
+
+	if      (cc <= SIG_MAX_COMPLEXITY_LOW)      { return "Green";       }
+	else if (cc <= SIG_MAX_COMPLEXITY_MODERATE) { return "Yellow";  }	
+	else if (cc <= SIG_MAX_COMPLEXITY_HIGH)     { return "Orange";	   }
+	else                                        { return "Red"; }
+
+	
+
+}
+
 public list[Figure] createVisualisation(list[Figure] figs, FileTree t){
 
 	switch(t){
 		
 		case fp(_,_,_): {
-			return [box(text(t.uri),fillColor("Orange"))];
+			return [box(fillColor(getComplexityColor(t.complexity)),vresizable(false), vsize(2*t.size))];
 		}
 		
 		case dir(_,_,_): {
@@ -75,21 +92,56 @@ public list[Figure] createVisualisation(list[Figure] figs, FileTree t){
 				
 			for (entry <- t.entries)
 			{	
-				figs += box(text(entry),fillColor("Red"));				
-				for (c <- t.entries[entry])
-				{
+				figs += box(fillColor(getComplexityColor(t.complexity)), hresizable(false), vresizable(false), hsize(200), vsize(2*t.size));
+											
+				for (c <- t.entries[entry]){
 					temp += [createVisualisation([], c)];
 				}
-				figs += grid(temp);		
+				
+				figs += grid(temp, vresizable(false));		
 			}
 			return figs;
 		}
 	}
 }
 
+public FileTree compute_sizes(FileTree t){
+			
+	int size = 0;
+	
+	visit(t){
+		
+		case \fp(_,int s,int c): {
+			size += s;
+		}
+		
+		case \dir(map[str uri, list[FileTree] childs] entries,_,_): {
+		
+			map[str uri, list[FileTree] childs] tmp_entries = ();
+			
+			for (entry <- entries){
+				
+				list[FileTree] tmp_childs = [];
+															
+				for (c <- entries[entry]){
+					c = compute_sizes(c);
+					tmp_childs += c;
+				}
+				
+				tmp_entries[entry] = tmp_childs;				
+			}
+			
+			t.entries = tmp_entries;
+		}
+	}
+	
+	t.size = size;
+	return t;
+}
+
 public void visualize(loc application){
 
-	hierarchy = dir((), 1, 1);
+	hierarchy = dir((), 0, 0);
 	
 	lrel[Declaration method, int size, int complexity] functions_with_size_and_complexity = getCyclomaticComplexity(getUnitsAndSize(application));
 	
@@ -98,7 +150,13 @@ public void visualize(loc application){
 		updateFT(split_path, fp(x.method.name, x.size, x.complexity));
 	}
 	
+	hierarchy = compute_sizes(hierarchy);
+	
+	//println(hierarchy);
+	
 	HierarchyComplexityVisualisation = createVisualisation([],hierarchy);
 	
-	render(grid([HierarchyComplexityVisualisation]));
+	sb = vscrollable(grid([HierarchyComplexityVisualisation], vresizable(false)),shrink(0.95));
+	
+	render(box(sb, fillColor("Grey")));
 }
