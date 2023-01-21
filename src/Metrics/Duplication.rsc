@@ -9,12 +9,10 @@ import util::Math;
 import util::Resources;
 import ProjectLoader::Loader;
 
-alias Duplicate = tuple[map[str,list[int]] src, map[str,list[int]] matches];
-alias P = tuple[str file, int line];
+alias FileLine = tuple[str file, int line];
 
-map[str,P] chunkHashes = ();
-list[Duplicate] duplicates = [];
-map[int,int] duplicates2 = ();
+map[str,rel[rel[str,int],rel[str,int]]] duplicates = ();
+map[str,FileLine] chunkHashes = ();
 int totalCodeLength = 0;
 int minimumLength=6;
 
@@ -26,7 +24,7 @@ int minimumLength=6;
 private void reset()
 {
     chunkHashes = ();
-    duplicates = [];
+    duplicates = ();
     totalCodeLength = 0;
 }
 
@@ -80,24 +78,25 @@ public int calculateDuplication(loc application)
 {
     reset();
     map[loc, list[str]] files = getFilesPerLocation(application);
-	for (file <- files) {calculateDuplicationForFile(files[file], file.file);
-		//if (size(duplicates) > 0)
+	for (file <- files)
+	{
+		calculateDuplicationForFile(files[file], file.file);
+		//if (size(duplicates) > 2)
 		//break;
 	}
-	int i = 0;
-	for (d <- duplicates)
-	{
-		for (x <- d.src)
-		{
-			println(d.src[x]);
-			i+=size(d.src[x]);
-		}
-	}
-	println(i);
-	println(duplicates2);
-	println(size(duplicates2));
+	int totalDuplicateLines = 0;
+	for (duplicate <- duplicates) totalDuplicateLines+=size(duplicate);
+	println(duplicates);
+	println("size m <totalDuplicateLines>");
 	println(totalCodeLength);
-    return percent(size(duplicates2), totalCodeLength);
+    return percent(totalDuplicateLines, totalCodeLength);
+}
+
+void addDuplicate(str src, int srcLine, str dest, int destLine)
+{
+	//println("src: <src>:<srcLine> dest: <dest>:<destLine>");
+	if (src notin(duplicates)) duplicates+=(src:{});
+	duplicates[src]+=<{<src,srcLine>},{<dest,destLine>}>;
 }
 
 @doc
@@ -113,8 +112,7 @@ public int calculateDuplication(loc application)
 }
 private void calculateDuplicationForFile(list[str] code, str file)
 {
-	Duplicate d = <(),()>;
-	println("<file>");
+	//println("<file>");
     map[int,str] lineMapping = mapLines(code);
     for (startLine <- [1..size(lineMapping)+1])
     {
@@ -124,18 +122,12 @@ private void calculateDuplicationForFile(list[str] code, str file)
         if (hash notin(chunkHashes)) chunkHashes+=(hash:<file, startLine>);
         else
         {
-        	for (i <- [0..minimumLength]) duplicates2+=(startLine+i:0);
 			for (i <- [0..minimumLength])
 			{
-				if (file notin(d.matches)) d.matches+=(file:[]);
-				if (startLine+i notin(d.matches[file])) d.matches[file]+=startLine+i;
-				if (chunkHashes[hash].file notin(d.src)) d.src+=(chunkHashes[hash].file:[]);
-				if (chunkHashes[hash].line+i notin(d.src[chunkHashes[hash].file])) d.src[chunkHashes[hash].file]+=chunkHashes[hash].line+i;
+				addDuplicate(chunkHashes[hash].file, chunkHashes[hash].line+i, file, startLine+i);
 			}
         }
     }
-    if (size(d.src) > 0) duplicates+=d;
-    //println("<d>");
 }
 
 
