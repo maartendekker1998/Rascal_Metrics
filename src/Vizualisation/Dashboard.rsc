@@ -4,6 +4,7 @@ import IO;
 import vis::Figure;
 import vis::Render;
 import vis::KeySym;
+import Metrics::Duplication;
 
 map[str,Figure] pages = ();
 alias DuplicationFigure = tuple[str src, list[str] files];
@@ -12,8 +13,11 @@ str currentPage;
 
 list[Figure] metricsHeader;
 
-public void renderDashboard()
+private DuplicationData duplicationData;
+
+public void renderDashboard(DuplicationData duplication)
 {
+	duplicationData = duplication;
 	currentPage = "dashboard";
 	Color headerColor = rgb(0x2E,0x34,0x40);
    	list[Figure] dashboardHeader =
@@ -32,17 +36,17 @@ public void renderDashboard()
 	];
     list[Figure] metricRowBottom =
     [
-    	box(text("Duplication"),fillColor("Red"),onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("duplication");return true;})),
+    	box(text("Duplication <duplicationData.percent>%"),fillColor("Red"),onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("duplication");return true;})),
      	box(text("Lines of code"),fillColor("Blue"),onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("lines of code");return true;}))
    	];
    
-   	Figure dashboard = grid([dashboardHeader,metricRowTop,metricRowBottom]);
-	Figure duplication = createDuplication();
-	Figure unitSize = createUnitSize();
-	Figure unitComplexity = createUnitComplexity();
-	Figure linesOfCode = createLinesOfCode();
+   	Figure dashboardPage = grid([dashboardHeader,metricRowTop,metricRowBottom]);
+	Figure duplicationPage = createDuplication();
+	Figure unitSizePage = createUnitSize();
+	Figure unitComplexityPage = createUnitComplexity();
+	Figure linesOfCodePage = createLinesOfCode();
 
-   	pages+=("dashboard":dashboard,"duplication":duplication,"unit size":unitSize,"unit complexity":unitComplexity,"lines of code":linesOfCode);
+   	pages+=("dashboard":dashboardPage,"duplication":duplicationPage,"unit size":unitSizePage,"unit complexity":unitComplexityPage,"lines of code":linesOfCodePage);
    	  	
    	render(computeFigure(Figure()
    	{

@@ -9,9 +9,11 @@ import util::Math;
 import util::Resources;
 import ProjectLoader::Loader;
 
-alias FileLine = tuple[str file, int line];
+private alias FileLine = tuple[str file, int line];
+public alias DuplicationData = tuple[int percent, Duplication duplication];
+public alias Duplication = map[str,rel[rel[str,int],rel[str,int]]];
 
-map[str,rel[rel[str,int],rel[str,int]]] duplicates = ();
+Duplication duplicates = ();
 map[str,FileLine] chunkHashes = ();
 int totalCodeLength = 0;
 int minimumLength=6;
@@ -74,7 +76,7 @@ public map[loc, list[str]] getFilesPerLocation(loc application)
 	 loc application | project
 	returns integer as the percentage, actual calculation is 'duplicate lines' / 'total lines' * 100
 }
-public int calculateDuplication(loc application)
+public DuplicationData calculateDuplication(loc application)
 {
     reset();
     map[loc, list[str]] files = getFilesPerLocation(application);
@@ -89,10 +91,10 @@ public int calculateDuplication(loc application)
 	println(duplicates);
 	println("size m <totalDuplicateLines>");
 	println(totalCodeLength);
-    return percent(totalDuplicateLines, totalCodeLength);
+    return <percent(totalDuplicateLines, totalCodeLength), duplicates>;
 }
 
-void addDuplicate(str src, int srcLine, str dest, int destLine)
+private void addDuplicate(str src, int srcLine, str dest, int destLine)
 {
 	//println("src: <src>:<srcLine> dest: <dest>:<destLine>");
 	if (src notin(duplicates)) duplicates+=(src:{});
