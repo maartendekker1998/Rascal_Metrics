@@ -2,6 +2,7 @@ module Metrics::Duplication
 
 import IO;
 import Map;
+import Set;
 import List;
 import String;
 import Relation;
@@ -87,8 +88,8 @@ public DuplicationData calculateDuplication(loc application)
 		//break;
 	}
 	int totalDuplicateLines = 0;
-	for (duplicate <- duplicates) totalDuplicateLines+=size(duplicate);
-	println(duplicates);
+	for (duplicate <- duplicates) totalDuplicateLines+=size(duplicates[duplicate]);
+	//println(duplicates);
 	println("size m <totalDuplicateLines>");
 	println(totalCodeLength);
     return <percent(totalDuplicateLines, totalCodeLength), duplicates>;
@@ -118,7 +119,7 @@ private void calculateDuplicationForFile(list[str] code, str file)
     map[int,str] lineMapping = mapLines(code);
     for (startLine <- [1..size(lineMapping)+1])
     {
-    	list[str] chunk = [(lineMapping[line]) | line <- [startLine..(startLine+minimumLength)], (startLine+minimumLength-1) <= size(lineMapping), !startsWith(lineMapping[line], "import")];
+    	list[str] chunk = [(lineMapping[line]) | line <- [startLine..(startLine+minimumLength)], (startLine+minimumLength-1) <= size(lineMapping), !startsWith(lineMapping[line], "import"), !startsWith(lineMapping[line], "//"),!startsWith(lineMapping[line], "/*"),!startsWith(lineMapping[line], "*/"),!startsWith(lineMapping[line], "*")];
         if (size(chunk) != minimumLength) continue;
         str hash = md5Hash(chunk);
         if (hash notin(chunkHashes)) chunkHashes+=(hash:<file, startLine>);

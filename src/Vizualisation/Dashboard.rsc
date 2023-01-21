@@ -4,11 +4,11 @@ import IO;
 import vis::Figure;
 import vis::Render;
 import vis::KeySym;
+import Set;
 import Metrics::Duplication;
 
 map[str,Figure] pages = ();
-alias DuplicationFigure = tuple[str src, list[str] files];
-map[Figure,DuplicationFigure] duplicationFigure = ();
+map[Figure, str] duplicationFigure = ();
 str currentPage;
 
 list[Figure] metricsHeader;
@@ -59,36 +59,39 @@ private void switchPage(str pageToSwitchTo)
 	currentPage = pageToSwitchTo;
 }
 
-private Figure createDuplication()
+private Figure createDetailOverlayBox(str file)
 {
-	list[Figure] graphs = [];
-	Color g = rgb(0xd8,0xde,0xe9);
-	for(d <- [1..40]) // get from duplication of all files
-	{
-		Figure src = box(text("<d>", textAngle(270)), fillColor(rgb(225,225,225)), renderPopup("SourceFile<d>.java"));
-		list[str] destinations = [];
-		for (x <- [1..5]) // get from actual duplications per file
-		{
-			destinations+="<x>";
-			//destinations+=box(text("File<x>.java", textAngle(270)), fillColor(rgb(125,125,125)), renderPopup("File<x>.java"));
-		}
-		//Figure duplicate = box(tree(src,destinations,left(),gap(20)));
-		duplicationFigure+=(src:<"<d>",destinations>);
-		graphs+=box(box(), onMouseDown(bool(int b,map[KeyModifier,bool]m){spawnDetails(src);return true;}));
-	}
-	//duplicates = box(hcat(graphs, hgap(20)), fillColor(g), lineColor(g));
-	duplicates = treemap(graphs);
-	return grid([metricsHeader, [duplicates]]);
+	return box(text(file,valign(0.05)),fillColor("gray"),shadow(true));
 }
 
-private void spawnDetails(Figure file)
+private Figure createDuplication()
 {
-	DuplicationFigure d = duplicationFigure[file];
-	println(d.src);
-	for (i <- d.files)
+	Duplication duplication = duplicationData.duplication;
+	list[Figure] graph = [];
+	list[Figure] graphWithoutPopup = [];
+	map[str, Figure] detailPages = ();
+	for(file <- duplication)
 	{
-		println("  <i>");
+		Figure details = createDetailOverlayBox(file);
+		detailPages+=(file:box(details, shrink(0.5,0.9), onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("duplication");return true;})));
+
+		Figure src = box(text("<size(duplication[file])>"),renderPopup(file));
+		Figure srcWithoutPopup = box(text("<size(duplication[file])>"));
+		duplicationFigure+=(src:file);
+		graph+=box(src, onMouseDown(bool(int b,map[KeyModifier,bool]m){spawnDetails(src);return true;}));
+		graphWithoutPopup+=box(srcWithoutPopup, onMouseDown(bool(int b,map[KeyModifier,bool]m){spawnDetails(src);return true;}));
 	}
+	for (detailPage <- detailPages)
+	{
+		pages+=(detailPage:overlay([grid([metricsHeader, [treemap(graphWithoutPopup)]]), detailPages[detailPage]]));
+	}
+	return grid([metricsHeader, [treemap(graph)]]);
+}
+
+private void spawnDetails(Figure src)
+{
+	str file = duplicationFigure[src];
+	switchPage(file);
 }
 
 private Figure createUnitSize()
