@@ -66,7 +66,9 @@ alias Dup = tuple[Pair src, Pair dest];
 
 private Figure createDetailOverlayBox(str file)
 {
+	int totalCodeSize = 0;
 	set[str] destFiles = {};
+	map[str,list[int]] codeLinesPerDestFile = ();
 	Duplication duplication = duplicationData.duplication;
 	str title = "<file>";
 	list[Dup] duplicates = [];
@@ -78,13 +80,17 @@ private Figure createDetailOverlayBox(str file)
 		str destFile = takeFirstFrom(range(invert(duplicate[1])))[0];
 		duplicates+=<<srcLine, srcFile>,<destLine, destFile>>;
 		destFiles+={destFile};
+		totalCodeSize+=1;
+		if (destFile notin(codeLinesPerDestFile)) codeLinesPerDestFile+=(destFile:[]);
+		list[int] codeLines = codeLinesPerDestFile[destFile];
+		codeLinesPerDestFile[destFile] = codeLines+=destLine;
 	}
 	list[Dup] sortedDuplicates = sort([<x,y> | <x,y> <- duplicates]);
-	Figure src = box(size(50), fillColor("green"),renderPopup(file));
+	Figure src = box(text("<totalCodeSize>"),size(50), fillColor("green"),renderPopup(file));
 	list[Figure] destinations = [];
 	for (destFile <- destFiles)
 	{
-		destinations+=box(size(50),fillColor("red"),renderPopup(destFile));
+		destinations+=box(text("<size(codeLinesPerDestFile[destFile])>"),size(50),fillColor("red"),renderPopup(destFile)/*,onMouseDown(bool(int b,map[KeyModifier,bool]m){println(destFile);return true;})*/);
 	}
 	//for (x <- sortedDuplicates) //todo for code show
 	//	title+="<x.src> <x.dest>\n";
