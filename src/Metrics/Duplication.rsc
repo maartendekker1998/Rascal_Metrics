@@ -41,18 +41,21 @@ private void reset()
 	 list[str] code | The code to map
 	returns a map with linenumber mappings to the corresponding line.
 }
-private map[int, str] mapLines(list[str] code)
+private rel[map[int, str],map[int, str]] mapLines(list[str] code)
 {
-    map[int, str] codes = ();
+	rel[map[int, str],map[int, str]] allCodes = {};
+    map[int, str] codesTrimmed = ();
+    map[int, str] originalCodes = ();
     int lineNumber = 1;
 	for (line <- code)
     {
     	totalCodeLength+=1;
-        line = trim(line);
-        codes+=(lineNumber:line);
+        codesTrimmed+=(lineNumber:trim(line));
+        originalCodes+=(lineNumber:line);
         lineNumber+=1;
     }
-    return codes;
+    allCodes+={<codesTrimmed,originalCodes>};
+    return allCodes;
 }
 
 @doc
@@ -95,7 +98,7 @@ public DuplicationData calculateDuplication(loc application)
     return <percent(totalDuplicateLines, totalCodeLength), duplicates>;
 }
 
-private void addDuplicate(str src, int srcLine, str dest, int destLine)
+private void addDuplicate(str src, int srcLine, str dest, int destLine, str codeLine)
 {
 	//println("src: <src>:<srcLine> dest: <dest>:<destLine>");
 	if (src notin(duplicates)) duplicates+=(src:{});
@@ -116,10 +119,12 @@ private void addDuplicate(str src, int srcLine, str dest, int destLine)
 private void calculateDuplicationForFile(list[str] code, str file)
 {
 	//println("<file>");
-    map[int,str] lineMapping = mapLines(code);
-    for (startLine <- [1..size(lineMapping)+1])
+    rel[map[int, str],map[int, str]] lineMapping = mapLines(code);
+    map[int, str] codes = getFirstFrom(domain(lineMapping));
+    map[int, str] original = getFirstFrom(range(lineMapping));
+    for (startLine <- [1..size(codes)+1])
     {
-    	list[str] chunk = [(lineMapping[line]) | line <- [startLine..(startLine+minimumLength)], (startLine+minimumLength-1) <= size(lineMapping), !startsWith(lineMapping[line], "import"), !startsWith(lineMapping[line], "//"),!startsWith(lineMapping[line], "/*"),!startsWith(lineMapping[line], "*/"),!startsWith(lineMapping[line], "*")];
+    	list[str] chunk = [(codes[line]) | line <- [startLine..(startLine+minimumLength)], (startLine+minimumLength-1) <= size(codes), !startsWith(codes[line], "import"), !startsWith(codes[line], "//"),!startsWith(codes[line], "/*"),!startsWith(codes[line], "*/"),!startsWith(codes[line], "*")];
         if (size(chunk) != minimumLength) continue;
         str hash = md5Hash(chunk);
         if (hash notin(chunkHashes)) chunkHashes+=(hash:<file, startLine>);
@@ -127,7 +132,8 @@ private void calculateDuplicationForFile(list[str] code, str file)
         {
 			for (i <- [0..minimumLength])
 			{
-				addDuplicate(chunkHashes[hash].file, chunkHashes[hash].line+i, file, startLine+i);
+				//println("<startLine+i> <original[startLine+i]>");
+				addDuplicate(chunkHashes[hash].file, chunkHashes[hash].line+i, file, startLine+i, original[startLine+i]);
 			}
         }
     }
