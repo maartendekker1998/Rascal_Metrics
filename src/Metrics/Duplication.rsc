@@ -12,7 +12,7 @@ import ProjectLoader::Loader;
 
 private alias FileLine = tuple[str file, int line];
 public alias DuplicationData = tuple[int percent, Duplication duplication];
-public alias Duplication = map[str,rel[rel[str,int],rel[str,int]]];
+public alias Duplication = map[str,rel[rel[str,int],rel[str,int],str]];
 
 Duplication duplicates = ();
 map[str,FileLine] chunkHashes = ();
@@ -102,7 +102,7 @@ private void addDuplicate(str src, int srcLine, str dest, int destLine, str code
 {
 	//println("src: <src>:<srcLine> dest: <dest>:<destLine>");
 	if (src notin(duplicates)) duplicates+=(src:{});
-	duplicates[src]+=<{<src,srcLine>},{<dest,destLine>}>;
+	duplicates[src]+=<{<src,srcLine>},{<dest,destLine>},codeLine>;
 }
 
 @doc

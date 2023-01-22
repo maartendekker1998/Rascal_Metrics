@@ -62,7 +62,7 @@ private void switchPage(str pageToSwitchTo)
 }
 
 alias Pair = tuple[int line, str file];
-alias Dup = tuple[Pair src, Pair dest];
+alias Dup = tuple[Pair src, Pair dest, str code];
 
 private Figure createDetailOverlayBox(str file)
 {
@@ -78,22 +78,32 @@ private Figure createDetailOverlayBox(str file)
 		str srcFile = takeFirstFrom(range(invert(duplicate[0])))[0];
 		int destLine = takeFirstFrom(domain(invert(duplicate[1])))[0];
 		str destFile = takeFirstFrom(range(invert(duplicate[1])))[0];
-		duplicates+=<<srcLine, srcFile>,<destLine, destFile>>;
+		duplicates+=<<srcLine, srcFile>,<destLine, destFile>, duplicate[2]>;
 		destFiles+={destFile};
 		totalCodeSize+=1;
 		if (destFile notin(codeLinesPerDestFile)) codeLinesPerDestFile+=(destFile:[]);
 		list[int] codeLines = codeLinesPerDestFile[destFile];
 		codeLinesPerDestFile[destFile] = codeLines+=destLine;
 	}
-	list[Dup] sortedDuplicates = sort([<x,y> | <x,y> <- duplicates]);
+	map[str,rel[int,str]] codeM = ();
+	list[Dup] sortedDuplicates = sort([<s,d,c> | <s,d,c> <- duplicates]);
+	for (x <- sortedDuplicates)
+	{
+		if (x.dest.file notin(codeM)) codeM+=(x.dest.file:{});
+		rel[int,str] l = codeM[x.dest.file];
+		codeM[x.dest.file] = l+=<x.dest.line,x.code>;
+	}
+	for (x <- codeM)
+		println(x);
 	Figure src = box(text("<totalCodeSize>"),size(50), fillColor("green"),renderPopup(file));
 	list[Figure] destinations = [];
 	for (destFile <- destFiles)
 	{
 		destinations+=box(text("<size(codeLinesPerDestFile[destFile])>"),size(50),fillColor("red"),renderPopup(destFile)/*,onMouseDown(bool(int b,map[KeyModifier,bool]m){println(destFile);return true;})*/);
 	}
-	//for (x <- sortedDuplicates) //todo for code show
-	//	title+="<x.src> <x.dest>\n";
+	
+	//for (x <- sortedDuplicates)
+	//	println("<x.src> <x.dest> <x.code>");
 	Figure duplicationTree = box(tree(src,destinations, gap(20)), valign(0.5),fillColor("darkgray"));
 	Figure detailHeader = box(text(title,valign(0.5)),fillColor("gray"),vshrink(0.1));
 	Figure detailBody = grid([[detailHeader],[duplicationTree]]);
