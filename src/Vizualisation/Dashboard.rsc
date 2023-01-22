@@ -5,6 +5,8 @@ import vis::Figure;
 import vis::Render;
 import vis::KeySym;
 import Set;
+import List;
+import Relation;
 import Metrics::Duplication;
 
 map[str,Figure] pages = ();
@@ -59,9 +61,37 @@ private void switchPage(str pageToSwitchTo)
 	currentPage = pageToSwitchTo;
 }
 
+alias Pair = tuple[int line, str file];
+alias Dup = tuple[Pair src, Pair dest];
+
 private Figure createDetailOverlayBox(str file)
 {
-	return box(text(file,valign(0.05)),fillColor("gray"),shadow(true));
+	set[str] destFiles = {};
+	Duplication duplication = duplicationData.duplication;
+	str title = "<file>";
+	list[Dup] duplicates = [];
+	for (duplicate <- duplication[file])
+	{
+		int srcLine = takeFirstFrom(domain(invert(duplicate[0])))[0];
+		str srcFile = takeFirstFrom(range(invert(duplicate[0])))[0];
+		int destLine = takeFirstFrom(domain(invert(duplicate[1])))[0];
+		str destFile = takeFirstFrom(range(invert(duplicate[1])))[0];
+		duplicates+=<<srcLine, srcFile>,<destLine, destFile>>;
+		destFiles+={destFile};
+	}
+	list[Dup] sortedDuplicates = sort([<x,y> | <x,y> <- duplicates]);
+	Figure src = box(size(50), fillColor("green"),renderPopup(file));
+	list[Figure] destinations = [];
+	for (destFile <- destFiles)
+	{
+		destinations+=box(size(50),fillColor("red"),renderPopup(destFile));
+	}
+	//for (x <- sortedDuplicates) //todo for code show
+	//	title+="<x.src> <x.dest>\n";
+	Figure duplicationTree = box(tree(src,destinations, gap(20)), valign(0.5),fillColor("darkgray"));
+	Figure detailHeader = box(text(title,valign(0.5)),fillColor("gray"),vshrink(0.1));
+	Figure detailBody = grid([[detailHeader],[duplicationTree]]);
+	return box(detailBody,shadow(true));
 }
 
 private Figure createDuplication()
