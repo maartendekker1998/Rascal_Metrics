@@ -108,7 +108,9 @@ public int calculateLOC(list[str] lines, list[LocationDetails] comments, int sta
 		incrementLOC();
 	}
 	return LOC;
-}public map[loc, list[str]] getFilesPerLocation(loc application){
+}
+
+public map[loc, list[str]] getFilesPerLocation(loc application){
 	
 	Resource r = getResourceFromEclipseProject(application);
 	set[loc] file_locations = getJavaFileLocationsFromResource(r);
