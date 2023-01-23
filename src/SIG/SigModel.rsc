@@ -9,12 +9,13 @@ import Metrics::Duplication;
 import Metrics::UnitSize;
 import Metrics::UnitTestCoverage;
 import lang::java::m3::AST;
+import Vizualisation::Dashboard;
 
 // This function will trigger all the metrics and compose the report
 public str getSigReport(loc application){
 
 	// Duplication
-	int duplicationPercent = calculateDuplication(application);
+	DuplicationData duplication = calculateDuplication(application);
 	
 	// Volume
 	int volume = calculateVolume(application);
@@ -50,12 +51,12 @@ public str getSigReport(loc application){
 	report += "  * asserts:   <assertions["assert"]>\n";
 	report += "  * fails:     <assertions["fail"]>\n";
 	report += "  * unittests: <assertions["tests"]>\n\n";
-	report += "duplication: <duplicationPercent>%\n\n";
+	report += "duplication: <duplication.percent>%\n\n";
 	
 	Rank volumeRank         = getSIGVolumeRank(volume);
 	Rank unitSizeRank       = getSIGUnitSizeRank(unitSize);
 	Rank unitComplexityRank = getSIGUnitSizeRank(unitComplexity);
-	Rank duplicationRank    = getSIGDuplicationRank(duplicationPercent);
+	Rank duplicationRank    = getSIGDuplicationRank(duplication.percent);
 	
 	report += "volume score: <volumeRank.string_representation>" + "\n";
 	report += "unit size score: <unitSizeRank.string_representation>\n";
@@ -78,6 +79,8 @@ public str getSigReport(loc application){
 	Rank overallRank = calculateWeigedAverage(overallArguments);
 	
 	report += "overall maintainability score: <overallRank.string_representation>\n";
+	
+	renderDashboard(duplication);
 
 	return report;
 }

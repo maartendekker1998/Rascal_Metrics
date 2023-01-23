@@ -2,6 +2,7 @@ module Metrics::Duplication
 
 import IO;
 import Map;
+import Set;
 import List;
 import String;
 import Relation;
@@ -9,8 +10,12 @@ import util::Math;
 import util::Resources;
 import ProjectLoader::Loader;
 
-map[str,int] chunkHashes = ();
-map[int,int] duplicates = ();
+private alias FileLine = tuple[str file, int line];
+public alias DuplicationData = tuple[int percent, Duplication duplication];
+public alias Duplication = map[str,rel[rel[str,int],rel[str,int],str]];
+
+Duplication duplicates = ();
+map[str,FileLine] chunkHashes = ();
 int totalCodeLength = 0;
 int minimumLength=6;
 
@@ -36,19 +41,21 @@ private void reset()
 	 list[str] code | The code to map
 	returns a map with linenumber mappings to the corresponding line.
 }
-private map[int, str] mapLines(list[str] code)
+private rel[map[int, str],map[int, str]] mapLines(list[str] code)
 {
-    map[int, str] codes = ();
+	rel[map[int, str],map[int, str]] allCodes = {};
+    map[int, str] codesTrimmed = ();
+    map[int, str] originalCodes = ();
     int lineNumber = 1;
 	for (line <- code)
     {
     	totalCodeLength+=1;
-        line = trim(line);
-    	if (startsWith(line, "import")) continue;
-        codes+=(lineNumber:line);
+        codesTrimmed+=(lineNumber:trim(line));
+        originalCodes+=(lineNumber:line);
         lineNumber+=1;
     }
-    return codes;
+    allCodes+={<codesTrimmed,originalCodes>};
+    return allCodes;
 }
 
 @doc
@@ -73,12 +80,29 @@ public map[loc, list[str]] getFilesPerLocation(loc application)
 	 loc application | project
 	returns integer as the percentage, actual calculation is 'duplicate lines' / 'total lines' * 100
 }
-public int calculateDuplication(loc application)
+public DuplicationData calculateDuplication(loc application)
 {
     reset();
     map[loc, list[str]] files = getFilesPerLocation(application);
-	for (file <- files) calculateDuplicationForFile(files[file]);
-    return percent(size(duplicates), totalCodeLength);
+	for (file <- files)
+	{
+		calculateDuplicationForFile(files[file], file.file);
+		//if (size(duplicates) > 2)
+		//break;
+	}
+	int totalDuplicateLines = 0;
+	for (duplicate <- duplicates) totalDuplicateLines+=size(duplicates[duplicate]);
+	//println(duplicates);
+	println("size m <totalDuplicateLines>");
+	println(totalCodeLength);
+    return <percent(totalDuplicateLines, totalCodeLength), duplicates>;
+}
+
+private void addDuplicate(str src, int srcLine, str dest, int destLine, str codeLine)
+{
+	//println("src: <src>:<srcLine> dest: <dest>:<destLine>");
+	if (src notin(duplicates)) duplicates+=(src:{});
+	duplicates[src]+=<{<src,srcLine>},{<dest,destLine>},codeLine>;
 }
 
 @doc
@@ -92,18 +116,25 @@ public int calculateDuplication(loc application)
 	Parameters:
 	 list[str] code | the code of that file
 }
-private void calculateDuplicationForFile(list[str] code)
+private void calculateDuplicationForFile(list[str] code, str file)
 {
-    map[int,str] lineMapping = mapLines(code);
-    for (startLine <- [1..size(lineMapping)+1])
+	//println("<file>");
+    rel[map[int, str],map[int, str]] lineMapping = mapLines(code);
+    map[int, str] codes = getFirstFrom(domain(lineMapping));
+    map[int, str] original = getFirstFrom(range(lineMapping));
+    for (startLine <- [1..size(codes)+1])
     {
-    	list[str] chunk = [(lineMapping[line]) | line <- [startLine..(startLine+minimumLength)], (startLine+minimumLength-1) <= size(lineMapping)];
-        if (isEmpty(chunk)) continue;
+    	list[str] chunk = [(codes[line]) | line <- [startLine..(startLine+minimumLength)], (startLine+minimumLength-1) <= size(codes), !startsWith(codes[line], "import"), !startsWith(codes[line], "//"),!startsWith(codes[line], "/*"),!startsWith(codes[line], "*/"),!startsWith(codes[line], "*")];
+        if (size(chunk) != minimumLength) continue;
         str hash = md5Hash(chunk);
-        if (hash notin(chunkHashes)) chunkHashes+=(hash:startLine);
+        if (hash notin(chunkHashes)) chunkHashes+=(hash:<file, startLine>);
         else
         {
-			for (i <- [0..minimumLength]) duplicates+=(startLine+i:0);
+			for (i <- [0..minimumLength])
+			{
+				//println("<startLine+i> <original[startLine+i]>");
+				addDuplicate(chunkHashes[hash].file, chunkHashes[hash].line+i, file, startLine+i, original[startLine+i]);
+			}
         }
     }
 }
