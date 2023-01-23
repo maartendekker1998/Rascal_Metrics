@@ -82,7 +82,7 @@ public str getSigReport(loc application){
 	report += "overall maintainability score: <overallRank.string_representation>\n";
 	
 	renderDashboard(duplication);
-	visualize(application);
+	//visualize(application);
 
 	return report;
 }
