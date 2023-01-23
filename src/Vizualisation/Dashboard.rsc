@@ -10,11 +10,8 @@ import Relation;
 import Metrics::Duplication;
 
 map[str,Figure] pages = ();
-map[Figure, str] duplicationFigure = ();
 str currentPage;
-
 list[Figure] metricsHeader;
-
 private DuplicationData duplicationData;
 
 public void renderDashboard(DuplicationData duplication)
@@ -85,29 +82,50 @@ private Figure createDetailOverlayBox(str file)
 		list[int] codeLines = codeLinesPerDestFile[destFile];
 		codeLinesPerDestFile[destFile] = codeLines+=destLine;
 	}
-	map[str,rel[int,str]] codeM = ();
 	list[Dup] sortedDuplicates = sort([<s,d,c> | <s,d,c> <- duplicates]);
+	map[str,rel[int,str]] codeM = ();
 	for (x <- sortedDuplicates)
 	{
 		if (x.dest.file notin(codeM)) codeM+=(x.dest.file:{});
 		rel[int,str] l = codeM[x.dest.file];
 		codeM[x.dest.file] = l+=<x.dest.line,x.code>;
 	}
-	for (x <- codeM)
-		println(x);
+	//createCodeView(codeM);
+	//for (x <- codeM)
+	//{
+	//	println(x);
+	//	createCodeView(codeM[x]);
+	//}
+	//	println(codeM[x]);
 	Figure src = box(text("<totalCodeSize>"),size(50), fillColor("green"),renderPopup(file));
 	list[Figure] destinations = [];
 	for (destFile <- destFiles)
 	{
-		destinations+=box(text("<size(codeLinesPerDestFile[destFile])>"),size(50),fillColor("red"),renderPopup(destFile)/*,onMouseDown(bool(int b,map[KeyModifier,bool]m){println(destFile);return true;})*/);
+		destinations+=box(text("<size(codeLinesPerDestFile[destFile])>"),size(50),fillColor("red"),renderPopup(destFile),detailedBoxClick(destFile));
 	}
-	
-	//for (x <- sortedDuplicates)
-	//	println("<x.src> <x.dest> <x.code>");
 	Figure duplicationTree = box(tree(src,destinations, gap(20)), valign(0.5),fillColor("darkgray"));
 	Figure detailHeader = box(text(title,valign(0.5)),fillColor("gray"),vshrink(0.1));
 	Figure detailBody = grid([[detailHeader],[duplicationTree]]);
 	return box(detailBody,shadow(true));
+}
+
+private void createCodeView(x)
+{
+	//println("x <x>");
+	for (y <- x)
+	{
+		println("y <x[y]>");
+	}
+	//for (x <- codeM)
+	//{
+	//	println(x);
+	//}
+}
+
+private void handleDetailedBoxClick(str destFile)
+{
+	println(destFile);
+	println(codeM[destFile]);
 }
 
 private Figure createDuplication()
@@ -123,9 +141,8 @@ private Figure createDuplication()
 
 		Figure src = box(text("<size(duplication[file])>"),renderPopup(file));
 		Figure srcWithoutPopup = box(text("<size(duplication[file])>"));
-		duplicationFigure+=(src:file);
-		graph+=box(src, onMouseDown(bool(int b,map[KeyModifier,bool]m){spawnDetails(src);return true;}));
-		graphWithoutPopup+=box(srcWithoutPopup, onMouseDown(bool(int b,map[KeyModifier,bool]m){spawnDetails(src);return true;}));
+		graph+=box(src, duplicationBoxClick(file));
+		graphWithoutPopup+=box(srcWithoutPopup, duplicationBoxClick(file));
 	}
 	for (detailPage <- detailPages)
 	{
@@ -134,11 +151,11 @@ private Figure createDuplication()
 	return grid([metricsHeader, [treemap(graph)]]);
 }
 
-private void spawnDetails(Figure src)
-{
-	str file = duplicationFigure[src];
-	switchPage(file);
-}
+private FProperty duplicationBoxClick(str file) = onMouseDown(bool(int b,map[KeyModifier,bool]m){spawnDetails(file);return true;});
+
+private FProperty detailedBoxClick(str destFile)= onMouseDown(bool(int b,map[KeyModifier,bool]m){handleDetailedBoxClick(destFile);return true;});
+
+private void spawnDetails(str file) = switchPage(file);
 
 private Figure createUnitSize()
 {
