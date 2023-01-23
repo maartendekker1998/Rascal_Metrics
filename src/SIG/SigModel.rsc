@@ -10,6 +10,7 @@ import Metrics::UnitSize;
 import Metrics::UnitTestCoverage;
 import lang::java::m3::AST;
 import Vizualisation::Dashboard;
+import Visualisation::tree_visual;
 
 // This function will trigger all the metrics and compose the report
 public str getSigReport(loc application){
@@ -81,6 +82,7 @@ public str getSigReport(loc application){
 	report += "overall maintainability score: <overallRank.string_representation>\n";
 	
 	renderDashboard(duplication);
+	visualize(application);
 
 	return report;
 }
