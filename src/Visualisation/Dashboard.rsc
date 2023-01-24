@@ -1,9 +1,11 @@
-module Vizualisation::Dashboard
+module Visualisation::Dashboard
 
 import IO;
 import vis::Figure;
 import vis::Render;
 import vis::KeySym;
+import Visualisation::ComplexityVisual;
+import lang::java::m3::AST;
 import Set;
 import List;
 import Relation;
@@ -14,7 +16,7 @@ str currentPage;
 list[Figure] metricsHeader;
 private DuplicationData duplicationData;
 
-public void renderDashboard(DuplicationData duplication)
+public void renderDashboard(DuplicationData duplication, lrel[Declaration, int, int] complexity)
 {
 	duplicationData = duplication;
 	currentPage = "dashboard";
@@ -42,7 +44,7 @@ public void renderDashboard(DuplicationData duplication)
    	Figure dashboardPage = grid([dashboardHeader,metricRowTop,metricRowBottom]);
 	Figure duplicationPage = createDuplication();
 	Figure unitSizePage = createUnitSize();
-	Figure unitComplexityPage = createUnitComplexity();
+	Figure unitComplexityPage = createUnitComplexity(complexity);
 	Figure linesOfCodePage = createLinesOfCode();
 
    	pages+=("dashboard":dashboardPage,"duplication":duplicationPage,"unit size":unitSizePage,"unit complexity":unitComplexityPage,"lines of code":linesOfCodePage);
@@ -167,10 +169,10 @@ private Figure createUnitSize()
 	return grid([metricsHeader, [treemap(l)]]);
 }
 
-private Figure createUnitComplexity()
+private Figure createUnitComplexity(complexity)
 {
-	unitComplexity = box(text("Unit comlexity"),fillColor("LightGreen"));
-	return grid([metricsHeader,[unitComplexity]]);
+	//unitComplexity = box(text("Unit comlexity"),fillColor("LightGreen"));
+	return grid([metricsHeader, [maakKutPlaatje(complexity)]]);
 }
 
 private Figure createLinesOfCode()
@@ -180,11 +182,3 @@ private Figure createLinesOfCode()
 }
 
 private FProperty renderPopup(str textData) = mouseOver(box(text(textData),fillColor("lightyellow"),grow(1.2),resizable(false)));
-
-
-
-
-
-
-
-

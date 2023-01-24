@@ -8,7 +8,7 @@ import String;
 import util::Benchmark;
 import util::Math;
 
-loc application = |project://JabberPoint/|;
+loc application = |project://smallsql/|;
 
 void main(str arg)
 {
@@ -28,6 +28,3 @@ void main()
 	int seconds = endTime % 60;
 	println("Execution time: <formatDate(hours)>:<formatDate(minutes)>:<formatDate(seconds)>");
 }
-
-
-
