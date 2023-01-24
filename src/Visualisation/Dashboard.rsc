@@ -11,9 +11,9 @@ import List;
 import Relation;
 import Metrics::Duplication;
 
-map[str,Figure] pages = ();
+public map[str,Figure] pages = ();
 str currentPage;
-list[Figure] metricsHeader;
+public list[Figure] metricsHeader;
 private DuplicationData duplicationData;
 
 public void renderDashboard(DuplicationData duplication, lrel[Declaration, int, int] complexity)
@@ -55,7 +55,7 @@ public void renderDashboard(DuplicationData duplication, lrel[Declaration, int, 
 	}));
 }
 
-private void switchPage(str pageToSwitchTo)
+public void switchPage(str pageToSwitchTo)
 {
 	currentPage = pageToSwitchTo;
 }
@@ -169,7 +169,7 @@ private Figure createUnitSize()
 
 private Figure createUnitComplexity(complexity)
 {
-	return grid([metricsHeader, [createComplexityFigure(complexity)]]);
+	return createComplexityFigure(complexity);
 }
 
 private Figure createLinesOfCode()

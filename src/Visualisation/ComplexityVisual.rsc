@@ -5,10 +5,12 @@ import String;
 import SIG::SigModel;
 import lang::java::m3::AST;
 import vis::Render;
+import vis::KeySym;
 import vis::Figure;
 import List;
 import Map;
 import Type;
+import Visualisation::Dashboard;
 
 // Super cool stuff that will not be used becuase of depressing rascal limitations
 
@@ -139,8 +141,6 @@ int SIG_MAX_COMPLEXITY_HIGH      = 50;
 
 public str getComplexityColor(int cc){
 
-
-
 	if      (cc <= SIG_MAX_COMPLEXITY_LOW)      { return "Green";       }
 	else if (cc <= SIG_MAX_COMPLEXITY_MODERATE) { return "Yellow";  }	
 	else if (cc <= SIG_MAX_COMPLEXITY_HIGH)     { return "Orange";	   }
@@ -151,29 +151,23 @@ public Figure createComplexityFigure(lrel[Declaration method, int size, int comp
 
 	list[Figure] temp = [];
 	int ts = 0;
-	
+	map[str, Figure] detailPages = ();
 	for(fp <- functions_with_size_and_complexity){
-		temp += [box(text("<fp.complexity>"), fillColor(getComplexityColor(fp.complexity)), area(5*fp.size))];
 		ts += fp.size;
+		str hash = md5Hash(fp);
+		Figure detailHeader = box(text("<fp.method.name>()",valign(0.5)),fillColor("gray"),vshrink(0.1));
+		Figure detailBody = box(text("Location: <fp.method.src.uri>\nComplexity: <fp.complexity>\nSize: <fp.size>"),fillColor("blue"));
+		Figure overBox = grid([[detailHeader],[detailBody]]);
+		detailPages+=("complex-<hash>":box(overBox, shrink(0.5,0.9),complexClick(),shadow(true)));
+		temp+=box(unitBoxClick("complex-<hash>"),fillColor(getComplexityColor(fp.complexity)),area(5*fp.size));
 	}
-	
-	return treemap(temp, area(5*ts), fillColor("Grey"));	
+	for (detailPage <- detailPages)
+	{
+		pages+=(detailPage:overlay([grid([metricsHeader, [treemap(temp)]]), detailPages[detailPage]]));
+	}
+	return grid([metricsHeader, [treemap(temp)]]);
 }
 
-public void visualize(loc application){
+private FProperty unitBoxClick(str hash) = onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage(hash);return true;});
 
-	//hierarchy = dir((), 0, 0);
-	//
-	//for(x <- functions_with_size_and_complexity){
-	//	split_path = split("/", split("project://", x.method.src.uri)[1]);
-	//	updateFT(split_path, fp(x.method.name, x.size, x.complexity));
-	//}
-	//
-	//hierarchy = compute_sizes(hierarchy);
-	//HierarchyComplexityVisualisation = createVisualisation([], hierarchy);
-	
-	lrel[Declaration method, int size, int complexity] functions_with_size_and_complexity = getCyclomaticComplexity(getUnitsAndSize(application));
-		
-	kutplaatje = maakKutPlaatje(functions_with_size_and_complexity);
-	render(kutplaatje);
-}
+private FProperty complexClick() = onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("unit complexity");return true;});
