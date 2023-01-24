@@ -85,25 +85,19 @@ private Figure createDetailOverlayBox(str file)
 		codeLinesPerDestFile[destFile] = codeLines+=destLine;
 	}
 	list[Dup] sortedDuplicates = sort([<s,d,c> | <s,d,c> <- duplicates]);
-	map[str,rel[int,str]] codeM = ();
+	map[rel[str,str],rel[int,int,str]] code = ();
 	for (x <- sortedDuplicates)
 	{
-		if (x.dest.file notin(codeM)) codeM+=(x.dest.file:{});
-		rel[int,str] l = codeM[x.dest.file];
-		codeM[x.dest.file] = l+=<x.dest.line,x.code>;
+		if ({<x.src.file,x.dest.file>} notin(code)) code+=({<x.src.file,x.dest.file>}:{});
+		rel[int,int,str] linesWithCode = code[{<x.src.file,x.dest.file>}];
+		code[{<x.src.file,x.dest.file>}] = linesWithCode+=<x.src.line,x.dest.line,x.code>;
 	}
-	//createCodeView(codeM);
-	//for (x <- codeM)
-	//{
-	//	println(x);
-	//	createCodeView(codeM[x]);
-	//}
-	//	println(codeM[x]);
+	createCodeView(code);
 	Figure src = box(text("<totalCodeSize>"),size(50), fillColor("green"),renderPopup(file));
 	list[Figure] destinations = [];
 	for (destFile <- destFiles)
 	{
-		destinations+=box(text("<size(codeLinesPerDestFile[destFile])>"),size(50),fillColor("red"),renderPopup(destFile),detailedBoxClick(destFile));
+		destinations+=box(text("<size(codeLinesPerDestFile[destFile])>"),size(50),fillColor("red"),renderPopup(destFile),detailedBoxClick("<file>-<destFile>"));
 	}
 	Figure duplicationTree = box(tree(src,destinations, gap(20)), valign(0.5),fillColor("darkgray"));
 	Figure detailHeader = box(text(title,valign(0.5)),fillColor("gray"),vshrink(0.1));
@@ -111,24 +105,28 @@ private Figure createDetailOverlayBox(str file)
 	return box(detailBody,shadow(true));
 }
 
-private void createCodeView(x)
+private void createCodeView(map[rel[str,str],rel[int,int,str]] code)
 {
-	//println("x <x>");
-	for (y <- x)
+	for (destFile <- code)
 	{
-		println("y <x[y]>");
+		list[list[Figure]] table = [];
+		str boxText = "<getFirstFrom(destFile)[0]> -\> <getFirstFrom(destFile)[1]>\n\n";
+		for (i <- sort([<s,d,c> | <s,d,c> <- code[destFile]]))
+		{
+			table+=
+	    	[[
+	    		box(hresizable(false),hsize(10),lineColor("white")),
+		        box(text("<i[0]> -\> <i[1]>",top(),halign(0.2)),hresizable(false),hsize(75),vresizable(false),vsize(25),lineColor("white")),
+		        box(text("<i[2]>",top(),left()),vresizable(false),vsize(25),lineColor("white"))
+	        ]];
+		}
+		Figure body = vcat([box(text(boxText),vsize(25),vresizable(false),top()),grid(table,gap(0),vresizable(false),top())]);
+		Figure tableGrid = grid([metricsHeader, [body]],onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage(getFirstFrom(destFile)[0]);return true;}));
+		pages+=("sub-<getFirstFrom(destFile)[0]>-<getFirstFrom(destFile)[1]>":tableGrid);
 	}
-	//for (x <- codeM)
-	//{
-	//	println(x);
-	//}
 }
 
-private void handleDetailedBoxClick(str destFile)
-{
-	println(destFile);
-	println(codeM[destFile]);
-}
+private void handleDetailedBoxClick(str destFile) = switchPage("sub-<destFile>");
 
 private Figure createDuplication()
 {
