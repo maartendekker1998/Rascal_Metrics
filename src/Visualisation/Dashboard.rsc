@@ -171,8 +171,7 @@ private Figure createUnitSize()
 
 private Figure createUnitComplexity(complexity)
 {
-	//unitComplexity = box(text("Unit comlexity"),fillColor("LightGreen"));
-	return grid([metricsHeader, [maakKutPlaatje(complexity)]]);
+	return grid([metricsHeader, [createComplexityFigure(complexity)]]);
 }
 
 private Figure createLinesOfCode()

@@ -147,7 +147,7 @@ public str getComplexityColor(int cc){
 	else                                        { return "Red"; }
 }
 
-public Figure maakKutPlaatje( lrel[Declaration method, int size, int complexity] functions_with_size_and_complexity ){
+public Figure createComplexityFigure(lrel[Declaration method, int size, int complexity] functions_with_size_and_complexity ){
 
 	list[Figure] temp = [];
 	int ts = 0;
