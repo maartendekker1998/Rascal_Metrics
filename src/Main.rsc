@@ -8,7 +8,7 @@ import String;
 import util::Benchmark;
 import util::Math;
 
-loc application = |project://smallsql/|;
+loc application = |project://JabberPoint/|;
 
 void main(str arg)
 {
