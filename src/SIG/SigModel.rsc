@@ -8,9 +8,8 @@ import Metrics::UnitComplexity;
 import Metrics::Duplication;
 import Metrics::UnitSize;
 import Metrics::UnitTestCoverage;
+import Visualisation::Dashboard;
 import lang::java::m3::AST;
-import Vizualisation::Dashboard;
-import Visualisation::tree_visual;
 
 // This function will trigger all the metrics and compose the report
 public str getSigReport(loc application){
@@ -29,7 +28,8 @@ public str getSigReport(loc application){
 	map[str,int] assertions = calculateUnitTestCoverage(application, allFunctionsAndSizes);	
 
 	// Complexity
-	map[str,real] unitComplexity = computeSIGUnitComplexityRiskCategories(getCyclomaticComplexity(allFunctionsAndSizes));
+	lrel[Declaration, int, int] functionsWithSizeAndComplexity = getCyclomaticComplexity(allFunctionsAndSizes);
+	map[str,real] unitComplexity = computeSIGUnitComplexityRiskCategories(functionsWithSizeAndComplexity);
 
 	str report = "<application.authority>\n";
 	report += "----\n\n";
@@ -81,8 +81,7 @@ public str getSigReport(loc application){
 	
 	report += "overall maintainability score: <overallRank.string_representation>\n";
 	
-	renderDashboard(duplication);
-	//visualize(application);
+	renderDashboard(duplication, functionsWithSizeAndComplexity);
 
 	return report;
 }

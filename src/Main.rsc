@@ -28,6 +28,3 @@ void main()
 	int seconds = endTime % 60;
 	println("Execution time: <formatDate(hours)>:<formatDate(minutes)>:<formatDate(seconds)>");
 }
-
-
-

@@ -1,4 +1,4 @@
-module Visualisation::tree_visual
+module Visualisation::ComplexityVisual
 
 import IO;
 import String;
@@ -9,6 +9,8 @@ import vis::Figure;
 import List;
 import Map;
 import Type;
+
+// Super cool stuff that will not be used becuase of depressing rascal limitations
 
 data FileTree 
           = fp(str uri, int size, int complexity)
@@ -61,44 +63,34 @@ public void updateFT(list[str] path, FileTree actual_file){
 	}
 }
 
-int SIG_MAX_COMPLEXITY_LOW       = 10;
-int SIG_MAX_COMPLEXITY_MODERATE  = 20;
-int SIG_MAX_COMPLEXITY_HIGH      = 50;
-
-public str getComplexityColor(int cc){
-
-
-
-	if      (cc <= SIG_MAX_COMPLEXITY_LOW)      { return "Green";       }
-	else if (cc <= SIG_MAX_COMPLEXITY_MODERATE) { return "Yellow";  }	
-	else if (cc <= SIG_MAX_COMPLEXITY_HIGH)     { return "Orange";	   }
-	else                                        { return "Red"; }
-
-	
-
-}
-
 public list[Figure] createVisualisation(list[Figure] figs, FileTree t){
 
 	switch(t){
 		
 		case fp(_,_,_): {
-			return [box(fillColor(getComplexityColor(t.complexity)),vresizable(false), vsize(2*t.size))];
+			return [box( text(t.uri), fillColor(getComplexityColor(t.complexity)) )];	
 		}
 		
 		case dir(_,_,_): {
 		
-			list[list[Figure]] temp = [];
+			list[Figure] temp = [];
 				
 			for (entry <- t.entries)
-			{	
-				figs += box(fillColor(getComplexityColor(t.complexity)), hresizable(false), vresizable(false), hsize(200), vsize(2*t.size));
-											
+			{												
 				for (c <- t.entries[entry]){
-					temp += [createVisualisation([], c)];
+					temp += createVisualisation([], c);
 				}
 				
-				figs += grid(temp, vresizable(false));		
+				figs += treemap([
+							box( 
+								vcat(
+									[text(entry), treemap(temp)]
+									,shrink(0.95)
+								),
+								fillColor("grey")
+							) 
+						]);
+				
 			}
 			return figs;
 		}
@@ -139,24 +131,49 @@ public FileTree compute_sizes(FileTree t){
 	return t;
 }
 
-public void visualize(loc application){
+// actual relevant stuff
 
-	hierarchy = dir((), 0, 0);
+int SIG_MAX_COMPLEXITY_LOW       = 10;
+int SIG_MAX_COMPLEXITY_MODERATE  = 20;
+int SIG_MAX_COMPLEXITY_HIGH      = 50;
+
+public str getComplexityColor(int cc){
+
+
+
+	if      (cc <= SIG_MAX_COMPLEXITY_LOW)      { return "Green";       }
+	else if (cc <= SIG_MAX_COMPLEXITY_MODERATE) { return "Yellow";  }	
+	else if (cc <= SIG_MAX_COMPLEXITY_HIGH)     { return "Orange";	   }
+	else                                        { return "Red"; }
+}
+
+public Figure maakKutPlaatje( lrel[Declaration method, int size, int complexity] functions_with_size_and_complexity ){
+
+	list[Figure] temp = [];
+	int ts = 0;
 	
-	lrel[Declaration method, int size, int complexity] functions_with_size_and_complexity = getCyclomaticComplexity(getUnitsAndSize(application));
-	
-	for(x <- functions_with_size_and_complexity){
-		split_path = split("/", split("project://", x.method.src.uri)[1]);
-		updateFT(split_path, fp(x.method.name, x.size, x.complexity));
+	for(fp <- functions_with_size_and_complexity){
+		temp += [box(text("<fp.complexity>"), fillColor(getComplexityColor(fp.complexity)), area(5*fp.size))];
+		ts += fp.size;
 	}
 	
-	hierarchy = compute_sizes(hierarchy);
+	return treemap(temp, area(5*ts), fillColor("Grey"));	
+}
+
+public void visualize(loc application){
+
+	//hierarchy = dir((), 0, 0);
+	//
+	//for(x <- functions_with_size_and_complexity){
+	//	split_path = split("/", split("project://", x.method.src.uri)[1]);
+	//	updateFT(split_path, fp(x.method.name, x.size, x.complexity));
+	//}
+	//
+	//hierarchy = compute_sizes(hierarchy);
+	//HierarchyComplexityVisualisation = createVisualisation([], hierarchy);
 	
-	//println(hierarchy);
-	
-	HierarchyComplexityVisualisation = createVisualisation([],hierarchy);
-	
-	sb = vscrollable(grid([HierarchyComplexityVisualisation], vresizable(false)),shrink(0.95));
-	
-	render(box(sb, fillColor("Grey")));
+	lrel[Declaration method, int size, int complexity] functions_with_size_and_complexity = getCyclomaticComplexity(getUnitsAndSize(application));
+		
+	kutplaatje = maakKutPlaatje(functions_with_size_and_complexity);
+	render(kutplaatje);
 }
