@@ -121,7 +121,7 @@ private void createCodeView(map[rel[str,str],rel[int,int,str]] code)
 	        ]];
 		}
 		Figure body = vcat([box(text(boxText),vsize(25),vresizable(false),top()),grid(table,gap(0),vresizable(false),top())]);
-		Figure tableGrid = grid([metricsHeader, [body]],onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage(getFirstFrom(destFile)[0]);return true;}));
+		Figure tableGrid = grid([metricsHeader, [scrollable(body)]],onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage(getFirstFrom(destFile)[0]);return true;}));
 		pages+=("sub-<getFirstFrom(destFile)[0]>-<getFirstFrom(destFile)[1]>":tableGrid);
 	}
 }
