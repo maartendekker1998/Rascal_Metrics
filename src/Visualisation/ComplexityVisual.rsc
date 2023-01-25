@@ -140,7 +140,6 @@ int SIG_MAX_COMPLEXITY_MODERATE  = 20;
 int SIG_MAX_COMPLEXITY_HIGH      = 50;
 
 public str getComplexityColor(int cc){
-
 	if      (cc <= SIG_MAX_COMPLEXITY_LOW)      { return "Green";       }
 	else if (cc <= SIG_MAX_COMPLEXITY_MODERATE) { return "Yellow";  }	
 	else if (cc <= SIG_MAX_COMPLEXITY_HIGH)     { return "Orange";	   }
@@ -156,9 +155,9 @@ public Figure createComplexityFigure(lrel[Declaration method, int size, int comp
 		ts += fp.size;
 		str hash = md5Hash(fp);
 		Figure detailHeader = box(text("<fp.method.name>()",valign(0.5)),fillColor("gray"),vshrink(0.1));
-		Figure detailBody = box(text("Location: <fp.method.src.uri>\nComplexity: <fp.complexity>\nSize: <fp.size>"),fillColor("blue"));
+		Figure detailBody = box(text("Location: <fp.method.src.uri>\nComplexity: <fp.complexity>\nSize: <fp.size>"),fillColor("darkgray"));
 		Figure overBox = grid([[detailHeader],[detailBody]]);
-		detailPages+=("complex-<hash>":box(overBox, shrink(0.5,0.9),complexClick(),shadow(true)));
+		detailPages+=("complex-<hash>":box(overBox, shrink(0.8,0.5),detailedViewClick(),shadow(true)));
 		temp+=box(unitBoxClick("complex-<hash>"),fillColor(getComplexityColor(fp.complexity)),area(5*fp.size));
 	}
 	for (detailPage <- detailPages)
@@ -170,4 +169,4 @@ public Figure createComplexityFigure(lrel[Declaration method, int size, int comp
 
 private FProperty unitBoxClick(str hash) = onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage(hash);return true;});
 
-private FProperty complexClick() = onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("unit complexity");return true;});
+private FProperty detailedViewClick() = onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("unit complexity");return true;});

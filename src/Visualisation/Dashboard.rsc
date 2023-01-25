@@ -16,6 +16,9 @@ str currentPage;
 public list[Figure] metricsHeader;
 private DuplicationData duplicationData;
 
+alias Pair = tuple[int line, str file];
+alias Dup = tuple[Pair src, Pair dest, str code];
+
 public void renderDashboard(DuplicationData duplication, lrel[Declaration, int, int] complexity)
 {
 	duplicationData = duplication;
@@ -32,22 +35,18 @@ public void renderDashboard(DuplicationData duplication, lrel[Declaration, int, 
 	];
 	list[Figure] metricRowTop =
 	[
-		box(text("Unit size"),fillColor("Silver"),onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("unit size");return true;})),
 		box(text("Unit complexity"),fillColor("Gold"),onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("unit complexity");return true;}))
 	];
     list[Figure] metricRowBottom =
     [
-    	box(text("Duplication <duplicationData.percent>%"),fillColor("Red"),onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("duplication");return true;})),
-     	box(text("Lines of code"),fillColor("Blue"),onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("lines of code");return true;}))
-   	];
+    	box(text("Duplication <duplicationData.percent>%"),fillColor("Red"),onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("duplication");return true;}))
+	];
    
    	Figure dashboardPage = grid([dashboardHeader,metricRowTop,metricRowBottom]);
 	Figure duplicationPage = createDuplication();
-	Figure unitSizePage = createUnitSize();
 	Figure unitComplexityPage = createUnitComplexity(complexity);
-	Figure linesOfCodePage = createLinesOfCode();
 
-   	pages+=("dashboard":dashboardPage,"duplication":duplicationPage,"unit size":unitSizePage,"unit complexity":unitComplexityPage,"lines of code":linesOfCodePage);
+   	pages+=("dashboard":dashboardPage,"duplication":duplicationPage,"unit complexity":unitComplexityPage);
    	  	
    	render(computeFigure(Figure()
    	{
@@ -59,9 +58,6 @@ public void switchPage(str pageToSwitchTo)
 {
 	currentPage = pageToSwitchTo;
 }
-
-alias Pair = tuple[int line, str file];
-alias Dup = tuple[Pair src, Pair dest, str code];
 
 private Figure createDetailOverlayBox(str file)
 {
@@ -131,17 +127,16 @@ private void createCodeView(map[rel[str,str],rel[int,int,str]] code)
 		    	[[
 		    		box(vSize,vresizable(false),hsize(10),hresizable(false),lineColor(color)),
 			        box(linesText,vSize,vresizable(false),hsize(75),hresizable(false),lineColor(color)),
-			        box(codeText,vSize,vresizable(false),lineColor(color))
+			        box(codeText,vSize,vresizable(false),lineColor(color)),
+			        box(vSize,vresizable(false),hsize(10),hresizable(false),lineColor(color))
 		        ]];
 			}
 		}
-		Figure body = vcat([box(text(boxText),vsize(25),vresizable(false),top()),grid(table,gap(0),vresizable(false),top())],onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage(getFirstFrom(destFile)[0]);return true;}));
+		Figure body = vcat([box(text(boxText),lineColor(color),vsize(25),vresizable(false),top()),grid(table,gap(0),vresizable(false),top())],onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage(getFirstFrom(destFile)[0]);return true;}));
 		Figure tableGrid = grid([metricsHeader, [scrollable(body)]]);
 		pages+=("sub-<getFirstFrom(destFile)[0]>-<getFirstFrom(destFile)[1]>":tableGrid);
 	}
 }
-
-private void handleDetailedBoxClick(str destFile) = switchPage("sub-<destFile>");
 
 private Figure createDuplication()
 {
@@ -166,31 +161,17 @@ private Figure createDuplication()
 	return grid([metricsHeader, [treemap(graph)]]);
 }
 
-private FProperty duplicationBoxClick(str file) = onMouseDown(bool(int b,map[KeyModifier,bool]m){spawnDetails(file);return true;});
-
-private FProperty detailedBoxClick(str destFile)= onMouseDown(bool(int b,map[KeyModifier,bool]m){handleDetailedBoxClick(destFile);return true;});
-
-private void spawnDetails(str file) = switchPage(file);
-
-private Figure createUnitSize()
-{
-	l = [];
-	for (x <- [0..500])
-	{
-		l+=box();
-	}
-	return grid([metricsHeader, [treemap(l)]]);
-}
-
 private Figure createUnitComplexity(complexity)
 {
 	return createComplexityFigure(complexity);
 }
 
-private Figure createLinesOfCode()
-{
-	linesOfCode = ellipse(text("Lines of code"),fillColor("LightBLue"));
-	return grid([metricsHeader,[linesOfCode]]);
-}
+private void handleDetailedBoxClick(str destFile) = switchPage("sub-<destFile>");
+
+private void showDuplicationDetails(str file) = switchPage(file);
+
+private FProperty duplicationBoxClick(str file) = onMouseDown(bool(int b,map[KeyModifier,bool]m){showDuplicationDetails(file);return true;});
+
+private FProperty detailedBoxClick(str destFile) = onMouseDown(bool(int b,map[KeyModifier,bool]m){handleDetailedBoxClick(destFile);return true;});
 
 private FProperty renderPopup(str textData) = mouseOver(box(text(textData),fillColor("lightyellow"),grow(1.2),resizable(false)));
