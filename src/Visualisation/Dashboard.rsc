@@ -107,18 +107,33 @@ private Figure createDetailOverlayBox(str file)
 
 private void createCodeView(map[rel[str,str],rel[int,int,str]] code)
 {
+	str color = "white";
 	for (destFile <- code)
 	{
 		list[list[Figure]] table = [];
 		str boxText = "<getFirstFrom(destFile)[0]> -\> <getFirstFrom(destFile)[1]>\n\n";
-		for (i <- sort([<s,d,c> | <s,d,c> <- code[destFile]]))
+		map[tuple[int,int],tuple[int,int,str]] linesCodeMap = (<s,d>:<s,d,c> | <s,d,c> <- sort([<s,d,c> | <s,d,c> <- code[destFile]]));
+		lrel[int,int,str] chunks = [];
+		set[tuple[int,int]] removed = {};
+		for (sortedCode <- sort([<s,d> | <s,d> <- linesCodeMap]))
 		{
-			table+=
-	    	[[
-	    		box(hresizable(false),hsize(10),lineColor("white")),
-		        box(text("<i[0]> -\> <i[1]>",top(),halign(0.2)),hresizable(false),hsize(75),vresizable(false),vsize(25),lineColor("white")),
-		        box(text("<i[2]>",top(),left()),vresizable(false),vsize(25),lineColor("white"))
-	        ]];
+			if (sortedCode in(removed)) continue;
+			int nextLine = 0;
+			while (<sortedCode[0]+nextLine,sortedCode[1]+nextLine> in(linesCodeMap))
+			{
+				tuple[int,int,str] chunk = linesCodeMap[<sortedCode[0]+nextLine,sortedCode[1]+nextLine>];
+				removed+=<sortedCode[0]+nextLine,sortedCode[1]+nextLine>;
+				nextLine+=1;
+				FProperty vSize = vsize((<chunk[0]+1,chunk[1]+1> notin(linesCodeMap)) ? 60 : 25);
+				Figure linesText = text("<chunk[0]> -\> <chunk[1]>",top(),halign(0.2));
+				Figure codeText = text("<chunk[2]>",top(),left());
+				table+=
+		    	[[
+		    		box(vSize,vresizable(false),hsize(10),hresizable(false),lineColor(color)),
+			        box(linesText,vSize,vresizable(false),hsize(75),hresizable(false),lineColor(color)),
+			        box(codeText,vSize,vresizable(false),lineColor(color))
+		        ]];
+			}
 		}
 		Figure body = vcat([box(text(boxText),vsize(25),vresizable(false),top()),grid(table,gap(0),vresizable(false),top())]);
 		Figure tableGrid = grid([metricsHeader, [scrollable(body)]],onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage(getFirstFrom(destFile)[0]);return true;}));
