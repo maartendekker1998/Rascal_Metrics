@@ -21,7 +21,6 @@ private Figure createDetailOverlayBox(str file)
 	set[str] destFiles = {};
 	map[str,list[int]] codeLinesPerDestFile = ();
 	Duplication duplication = duplicationData.duplication;
-	str title = "<file>";
 	list[DuplicationItem] duplicates = [];
 	for (duplicate <- duplication[file])
 	{
@@ -46,15 +45,21 @@ private Figure createDetailOverlayBox(str file)
 	}
 	createCodeView(code);
 	Figure src = box(text("<totalCodeSize>"),size(50), fillColor("green"),renderPopup(file));
+	list[Figure] destinations = createDuplicationDestinationBoxes(destFiles, codeLinesPerDestFile, file);
+	Figure duplicationTree = box(tree(src,destinations, gap(20)), valign(0.5),fillColor("darkgray"));
+	Figure detailHeader = box(text("<file>",valign(0.5)),fillColor("gray"),vshrink(0.1));
+	Figure detailBody = grid([[detailHeader],[duplicationTree]]);
+	return box(detailBody,shadow(true));
+}
+
+private list[Figure] createDuplicationDestinationBoxes(set[str] destFiles, map[str,list[int]] codeLinesPerDestFile, str file)
+{
 	list[Figure] destinations = [];
 	for (destFile <- destFiles)
 	{
 		destinations+=box(text("<size(codeLinesPerDestFile[destFile])>"),size(50),fillColor("red"),renderPopup(destFile),detailedBoxClick("<file>-<destFile>"));
 	}
-	Figure duplicationTree = box(tree(src,destinations, gap(20)), valign(0.5),fillColor("darkgray"));
-	Figure detailHeader = box(text(title,valign(0.5)),fillColor("gray"),vshrink(0.1));
-	Figure detailBody = grid([[detailHeader],[duplicationTree]]);
-	return box(detailBody,shadow(true));
+	return destinations;
 }
 
 private void createCodeView(map[rel[str,str],rel[int,int,str]] code)
@@ -99,20 +104,15 @@ public Figure createDuplicationFigure(DuplicationData duplication)
 	duplicationData = duplication;
 	list[Figure] graph = [];
 	list[Figure] graphWithoutPopup = [];
-	map[str, Figure] detailPages = ();
 	for(file <- duplicationData.duplication)
 	{
 		Figure details = createDetailOverlayBox(file);
-		detailPages+=(file:box(details, shrink(0.5,0.9), onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("duplication");return true;})));
-
+		Figure detailPage = box(details, shrink(0.5,0.9), onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("duplication");return true;}));
+		pages+=(file:overlay([grid([metricsHeader, [treemap(graphWithoutPopup)]]), detailPage]));
 		Figure src = box(text("<size(duplicationData.duplication[file])>"),renderPopup(file));
 		Figure srcWithoutPopup = box(text("<size(duplicationData.duplication[file])>"));
 		graph+=box(src, duplicationBoxClick(file));
 		graphWithoutPopup+=box(srcWithoutPopup, duplicationBoxClick(file));
-	}
-	for (detailPage <- detailPages)
-	{
-		pages+=(detailPage:overlay([grid([metricsHeader, [treemap(graphWithoutPopup)]]), detailPages[detailPage]]));
 	}
 	return grid([metricsHeader, [treemap(graph)]]);
 }
