@@ -10,6 +10,7 @@ import Metrics::UnitSize;
 import Metrics::UnitTestCoverage;
 import Visualisation::Dashboard;
 import lang::java::m3::AST;
+import DataTypes::LocationDetails;
 
 // This function will trigger all the metrics and compose the report
 public str getSigReport(loc application){
@@ -92,5 +93,4 @@ lrel[Declaration method, int size] getUnitsAndSize(loc application){
 
 lrel[Declaration, int, int] getCyclomaticComplexity(allFunctionsAndSizes){
 	return getComplexity(allFunctionsAndSizes);
-	
 }

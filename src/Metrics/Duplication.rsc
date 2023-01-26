@@ -9,10 +9,9 @@ import Relation;
 import util::Math;
 import util::Resources;
 import ProjectLoader::Loader;
+import DataTypes::LocationDetails;
 
 private alias FileLine = tuple[str file, int line];
-public alias DuplicationData = tuple[int percent, Duplication duplication];
-public alias Duplication = map[str,rel[rel[str,int],rel[str,int],str]];
 
 Duplication duplicates = ();
 map[str,FileLine] chunkHashes = ();
