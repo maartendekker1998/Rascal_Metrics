@@ -11,10 +11,16 @@ import Metrics::UnitTestCoverage;
 import Visualisation::Dashboard;
 import lang::java::m3::AST;
 import DataTypes::LocationDetails;
+import String;
+import util::Benchmark;
+import util::Math;
+
+private str formatDate(int x) = size(toString(x)) == 1 ? "0<x>" : "<x>";
 
 // This function will trigger all the metrics and compose the report
 public str getSigReport(loc application){
 
+	int startTime = realTime();
 	// Duplication
 	DuplicationData duplication = calculateDuplication(application);
 	
@@ -31,6 +37,7 @@ public str getSigReport(loc application){
 	// Complexity
 	lrel[Declaration, int, int] functionsWithSizeAndComplexity = getCyclomaticComplexity(allFunctionsAndSizes);
 	map[str,real] unitComplexity = computeSIGUnitComplexityRiskCategories(functionsWithSizeAndComplexity);
+	UnitComplexity complexity = <functionsWithSizeAndComplexity,unitComplexity>;
 
 	str report = "<application.authority>\n";
 	report += "----\n\n";
@@ -82,7 +89,14 @@ public str getSigReport(loc application){
 	
 	report += "overall maintainability score: <overallRank.string_representation>\n";
 	
-	renderDashboard(duplication, functionsWithSizeAndComplexity);
+	
+	int endTime = ((realTime()-startTime)/1000);
+	int hours = endTime / 3600;
+	int minutes = (endTime % 3600) /60;
+	int seconds = endTime % 60;
+	str executionTime = "Execution time: <formatDate(hours)>:<formatDate(minutes)>:<formatDate(seconds)>";
+	DashboardData dashboardData = <application.authority,duplication,complexity,unitSize,volume,size(allFunctionsAndSizes),assertions,executionTime>;
+	renderDashboard(dashboardData);
 
 	return report;
 }
