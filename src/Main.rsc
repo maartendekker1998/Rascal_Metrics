@@ -5,7 +5,7 @@ import ProjectLoader::Loader;
 import SIG::SigModel;
 import Metrics::Volume;
 
-loc application = |project://JabberPoint/|;
+loc application = |project://hsqldb/|;
 
 void main()
 {

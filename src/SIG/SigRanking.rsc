@@ -82,8 +82,6 @@ public map[str key, real percentage] computeSIGUnitComplexityRiskCategories(lrel
 	return risks;
 }
 
-
-
 public Rank getSIGDuplicationRank(int percentage){
 
 	if    (percentage < 3)	return plusplus;

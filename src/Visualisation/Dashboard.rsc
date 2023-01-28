@@ -101,13 +101,13 @@ private Figure createUnitComplexityBox(UnitComplexity unitComplexityData, bool s
 	Color currentColor = selectable ? tileSelectedColor:tileColor;
 	Figure unitComplexitySubBox = box(text("Unit complexity",fontColor(contentTextColor),left()),lineColor(currentColor),fillColor(currentColor),vresizable(false),left());
 	Figure unitComplexitySimple = box(text("  Simple:",fontColor(contentTextColor),left()),lineColor(currentColor),fillColor(currentColor),vresizable(false),left());
-	Figure unitComplexitySimpleNumber = box(text("<unitComplexityData.complexity["simple"]>%",fontColor(contentTextColor),left()),lineColor(currentColor),fillColor(currentColor),resizable(false),hsize(100),left());
+	Figure unitComplexitySimpleNumber = box(text("<unitComplexityData.complexity["simple"]>%",fontColor(getColorByUnitComplexityPercent(unitComplexityData.complexity,"simple")),left()),lineColor(currentColor),fillColor(currentColor),resizable(false),hsize(100),left());
 	Figure unitComplexityModerate = box(text("  Moderate:",fontColor(contentTextColor),left()),lineColor(currentColor),fillColor(currentColor),vresizable(false),left());
-	Figure unitComplexityModerateNumber = box(text("<unitComplexityData.complexity["moderate"]>%",fontColor(contentTextColor),left()),lineColor(currentColor),fillColor(currentColor),resizable(false),hsize(100),left());
+	Figure unitComplexityModerateNumber = box(text("<unitComplexityData.complexity["moderate"]>%",fontColor(getColorByUnitComplexityPercent(unitComplexityData.complexity,"moderate")),left()),lineColor(currentColor),fillColor(currentColor),resizable(false),hsize(100),left());
 	Figure unitComplexityHigh = box(text("  High:",fontColor(contentTextColor),left()),lineColor(currentColor),fillColor(currentColor),vresizable(false),left());
-	Figure unitComplexityHighNumber = box(text("<unitComplexityData.complexity["high"]>%",fontColor(contentTextColor),left()),lineColor(currentColor),fillColor(currentColor),resizable(false),hsize(100),left());
+	Figure unitComplexityHighNumber = box(text("<unitComplexityData.complexity["high"]>%",fontColor(getColorByUnitComplexityPercent(unitComplexityData.complexity,"high")),left()),lineColor(currentColor),fillColor(currentColor),resizable(false),hsize(100),left());
 	Figure unitComplexityVeryHigh = box(text("  Very high:",fontColor(contentTextColor),left()),lineColor(currentColor),fillColor(currentColor),vresizable(false),left());
-	Figure unitComplexityVeryHighNumber = box(text("<unitComplexityData.complexity["very high"]>%",fontColor(contentTextColor),left()),lineColor(currentColor),fillColor(currentColor),resizable(false),hsize(100),left());
+	Figure unitComplexityVeryHighNumber = box(text("<unitComplexityData.complexity["very high"]>%",fontColor(getColorByUnitComplexityPercent(unitComplexityData.complexity,"very high")),left()),lineColor(currentColor),fillColor(currentColor),resizable(false),hsize(100),left());
 
 	return grid([
 		[space(size(offset,offset),resizable(false)),space(vsize(offset),resizable(false)),space(vsize(offset),resizable(false))],
@@ -125,13 +125,13 @@ private Figure createUnitSizeBox(map[str,real] unitSizeData)
 	int offset = 20;
 	Figure unitSizeSubBox = box(text("Unit size",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
 	Figure unitSizeSimple = box(text("  Simple:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
-	Figure unitSizeSimpleNumber = box(text("<unitSizeData["simple"]>%",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+	Figure unitSizeSimpleNumber = box(text("<unitSizeData["simple"]>%",fontColor(getColorByUnitSizePercent(unitSizeData,"simple")),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
 	Figure unitSizeModerate = box(text("  Moderate:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
-	Figure unitSizeModerateNumber = box(text("<unitSizeData["moderate"]>%",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+	Figure unitSizeModerateNumber = box(text("<unitSizeData["moderate"]>%",fontColor(getColorByUnitSizePercent(unitSizeData,"moderate")),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
 	Figure unitSizeHigh = box(text("  High:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
-	Figure unitSizeHighNumber = box(text("<unitSizeData["high"]>%",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+	Figure unitSizeHighNumber = box(text("<unitSizeData["high"]>%",fontColor(getColorByUnitSizePercent(unitSizeData,"high")),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
 	Figure unitSizeVeryHigh = box(text("  Very high:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
-	Figure unitSizeVeryHighNumber = box(text("<unitSizeData["very high"]>%",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+	Figure unitSizeVeryHighNumber = box(text("<unitSizeData["very high"]>%",fontColor(getColorByUnitSizePercent(unitSizeData,"very high")),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
 
 	return grid([
 		[space(size(offset,offset),resizable(false)),space(vsize(offset),resizable(false)),space(vsize(offset),resizable(false))],
@@ -165,7 +165,7 @@ private Figure createDuplicationBox(DuplicationData duplicaitonData, bool select
 	int offset = 20;
 	Color currentColor = selectable ? tileSelectedColor:tileColor;
 	Figure duplicationSubBox = box(text("Duplication",fontColor(contentTextColor),left()),lineColor(currentColor),fillColor(currentColor),vresizable(false),left());
-	Figure duplicationNumber = box(text("<duplicaitonData.percent>%",fontColor(contentTextColor),left()),lineColor(currentColor),fillColor(currentColor),resizable(false),hsize(100),left());
+	Figure duplicationNumber = box(text("<duplicaitonData.percent>%",fontColor(getColorByDuplicationPercent(duplicaitonData.percent)),left()),lineColor(currentColor),fillColor(currentColor),resizable(false),hsize(100),left());
 	
 	return grid([
 		[space(size(offset,offset),resizable(false)),space(vsize(offset),resizable(false)),space(vsize(offset),resizable(false))],
@@ -179,11 +179,11 @@ private Figure createUnitTestBox(map[str,int] unitTestData)
 	int offset = 20;
 	Figure unitTestSubBox = box(text("Unit tests",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
 	Figure unitTestFunctions = box(text("  Functions:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
-	Figure unitTestFunctionsNumber = box(text("<unitTestData["tests"]>%",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+	Figure unitTestFunctionsNumber = box(text("<unitTestData["tests"]>",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
 	Figure unitTestAsserts = box(text("  Asserts:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
-	Figure unitTestAssertsNumber = box(text("<unitTestData["assert"]>%",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+	Figure unitTestAssertsNumber = box(text("<unitTestData["assert"]>",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
 	Figure unitTestFails = box(text("  Fails:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
-	Figure unitTestsFailsNumber = box(text("<unitTestData["fail"]>%",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+	Figure unitTestsFailsNumber = box(text("<unitTestData["fail"]>",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
 
 	Figure unitTestsGrid = grid([
 		[space(size(offset,offset),resizable(false)),space(vsize(offset),resizable(false)),space(vsize(offset),resizable(false))],
@@ -194,6 +194,48 @@ private Figure createUnitTestBox(map[str,int] unitTestData)
 		[space(hsize(offset),resizable(false)),space(),space()]
 		]);
 	return unitTestsGrid;
+}
+
+private Color getColorByUnitComplexityPercent(map[str,real] complexity, str level)
+{
+	if (level == "simple") return complexity[level] <= 60 ? red :
+								 (complexity[level] <= 75 ? orange : 
+								 (complexity[level] <= 90 ? yellow : green));
+	if (level == "moderate") return complexity[level] <= 20 ? green :
+								   (complexity[level] <= 40 ? yellow : 
+								   (complexity[level] <= 60 ? orange : red));
+	if (level == "high") return complexity[level] <= 1 ? green :
+							   (complexity[level] <= 7 ? yellow : 
+							   (complexity[level] <= 20 ? orange : red));
+	if (level == "very high") return complexity[level] <= 0 ? green :
+									(complexity[level] <= 0 ? yellow : 
+									(complexity[level] <= 1 ? orange : red));
+	return red;
+}
+
+private Color getColorByUnitSizePercent(map[str,real] unitSizeData, str level)
+{
+	if (level == "simple") return unitSizeData[level] <= 44 ? red :
+								 (unitSizeData[level] <= 62 ? orange : 
+								 (unitSizeData[level] <= 80 ? yellow : green));
+	if (level == "moderate") return unitSizeData[level] <= 20 ? green :
+								   (unitSizeData[level] <= 32 ? yellow : 
+								   (unitSizeData[level] <= 44 ? orange : red));
+	if (level == "high") return unitSizeData[level] <= 6 ? green :
+							   (unitSizeData[level] <= 12 ? yellow : 
+							   (unitSizeData[level] <= 20 ? orange : red));
+	if (level == "very high") return unitSizeData[level] <= 3 ? green :
+									(unitSizeData[level] <= 5 ? yellow : 
+									(unitSizeData[level] <= 6 ? orange : red));
+	return red;
+}
+
+private Color getColorByDuplicationPercent(int percent)
+{
+	return (percent <= 3 ? green :
+		   (percent <= 5 ? yellow :
+		   (percent <= 10 ? orange : 
+		   (percent <= 20 ? red : purple))));
 }
 
 public void switchPage(str pageToSwitchTo)
