@@ -12,18 +12,19 @@ import List;
 import Relation;
 import Metrics::Duplication;
 import DataTypes::LocationDetails;
+import DataTypes::Color;
 
 public map[str,Figure] pages = ();
 private str currentPage;
 public list[Figure] metricsHeader;
 private map[str, bool] pageIsSelected = ();
 
-private Color headerColor = rgb(0x2E,0x34,0x40);//Nord 0
-private Color bodyColor = rgb(0x3B,0x42,0x52);//Nord 1
-private Color tileColor = rgb(0x43,0x4C,0x5E);//Nord 2
-private Color contentTextColor = rgb(0xD8,0xDE,0xE9);//Nord 4
-private Color headerTextColor = rgb(0xD8,0xDE,0xE9);//Nord 4
-private Color tileSelectedColor = rgb(0x81,0xA1,0xC1);//Nord 9
+private Color headerColor = nord0;
+private Color bodyColor = nord1;
+private Color tileColor = nord2;
+private Color contentTextColor = nord4;
+private Color headerTextColor = nord4;
+private Color tileSelectedColor = nord9;
 
 public void renderDashboard(DashboardData dashboardData)
 {

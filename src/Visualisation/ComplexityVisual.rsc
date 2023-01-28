@@ -11,10 +11,15 @@ import List;
 import Map;
 import Type;
 import Visualisation::Dashboard;
+import DataTypes::Color;
 
 int SIG_MAX_COMPLEXITY_LOW       = 10;
 int SIG_MAX_COMPLEXITY_MODERATE  = 20;
 int SIG_MAX_COMPLEXITY_HIGH      = 50;
+
+private Color detailHeaderColor = nord1;
+private Color detailBodyColor = nord9;
+private Color contentTextColor = nord4;
 
 private data FileTree 
           = fp(str uri, int size, int complexity)
@@ -51,11 +56,11 @@ private map[str, list[FileTree]] updateFT(map[str uri, list[FileTree] childs] st
 	}
 }
 
-private str getComplexityColor(int cc){
-	if      (cc <= SIG_MAX_COMPLEXITY_LOW)      { return "Green";       }
-	else if (cc <= SIG_MAX_COMPLEXITY_MODERATE) { return "Yellow";  }	
-	else if (cc <= SIG_MAX_COMPLEXITY_HIGH)     { return "Orange";	   }
-	else                                        { return "Red"; }
+private Color getComplexityColor(int cc){
+	if      (cc <= SIG_MAX_COMPLEXITY_LOW)      return green;
+	else if (cc <= SIG_MAX_COMPLEXITY_MODERATE) return yellow;
+	else if (cc <= SIG_MAX_COMPLEXITY_HIGH)     return orange;
+	else                                        return red;
 }
 
 public Figure createComplexityFigure(lrel[Declaration method, int size, int complexity] functions_with_size_and_complexity ){
@@ -66,8 +71,8 @@ public Figure createComplexityFigure(lrel[Declaration method, int size, int comp
 	for(fp <- functions_with_size_and_complexity){
 		ts += fp.size;
 		str hash = md5Hash(fp);
-		Figure detailHeader = box(text("<fp.method.name>()",valign(0.5)),fillColor("gray"),vshrink(0.1));
-		Figure detailBody = box(text("Location: <fp.method.src.uri>\nComplexity: <fp.complexity>\nSize: <fp.size>"),fillColor("darkgray"));
+		Figure detailHeader = box(text("<fp.method.name>()",valign(0.5),fontColor(contentTextColor)),fillColor(detailHeaderColor),vshrink(0.1));
+		Figure detailBody = box(text("Location: <fp.method.src.uri>\nComplexity: <fp.complexity>\nSize: <fp.size>"),fillColor(detailBodyColor));
 		Figure overBox = grid([[detailHeader],[detailBody]]);
 		detailPages+=("complex-<hash>":box(overBox, shrink(0.8,0.5),detailedViewClick(),shadow(true)));
 		temp+=box(unitBoxClick("complex-<hash>"),fillColor(getComplexityColor(fp.complexity)),area(5*fp.size));
