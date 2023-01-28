@@ -30,18 +30,14 @@ public lrel[Declaration method, int size] calculateUnitsAndSize(application){
 		}
 	}
 	
-	//for (x <- allFunctionsAndSizes){
-	//	println("<x.method.src><x.method.name> has size <x.size>\n");
-	//}
-
 	return allFunctionsAndSizes;
 }
 
 private tuple[Declaration method, int size] addFunction(function, map[loc, list[LocationDetails]] comments)
 {
-	list[str] function_lines = readFileLines(function.src);				
-	loc function_location = toLocation(function.src.uri);
-	int volume = calculateLOC(function_lines, comments[function_location]?[], function.src.begin.line);
+	list[str] functionLines = readFileLines(function.src);				
+	loc functionLocation = toLocation(function.src.uri);
+	int volume = calculateLOC(functionLines, comments[functionLocation]?[], function.src.begin.line);
 	tuple[Declaration method, int size] DeclarationAndSize = <function, volume>;
 	return DeclarationAndSize;
 }

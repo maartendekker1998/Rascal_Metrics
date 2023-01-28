@@ -10,16 +10,16 @@ public map[loc, list[LocationDetails]] getComments(loc application){
 	
 	M3 model = getM3ModelFromEclipseProject(application);
 	
-	map[loc, list[LocationDetails]] comments_per_file  = ();
+	map[loc, list[LocationDetails]] commentsPerFile  = ();
 	
 	for (doc <- model.documentation){
 
 		loc uri = toLocation(doc.comments.uri);
 
-		list[LocationDetails] LocationDetails_list = comments_per_file[uri]?[];
-		LocationDetails_list += createCommentDetails(doc.comments);
-		comments_per_file[uri] = LocationDetails_list;
+		list[LocationDetails] locationDetailsList = commentsPerFile[uri]?[];
+		locationDetailsList += createCommentDetails(doc.comments);
+		commentsPerFile[uri] = locationDetailsList;
 	}
 	
-	return comments_per_file;
+	return commentsPerFile;
 }

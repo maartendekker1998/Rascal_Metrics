@@ -26,32 +26,32 @@ private data FileTree
 		  | dir(map[str uri, list[FileTree] childs] entries, int size, int complexity)
 		  ;
 		  
-private map[str, list[FileTree]] updateFT(map[str uri, list[FileTree] childs] state, str current_path, list[str] path, FileTree actual_file){
+private map[str, list[FileTree]] updateFT(map[str uri, list[FileTree] childs] state, str currentPath, list[str] path, FileTree actualFile){
 
 	if (size(path) > 0){
 				
 		map[str uri, list[FileTree] childs] temp = ();
 		
-		for(entry <- state[current_path]){
+		for(entry <- state[currentPath]){
 
 			if(head(path) in entry.entries.uri)
 			{
-				i = indexOf(state[current_path], entry);
+				i = indexOf(state[currentPath], entry);
 				temp = (head(path):entry.entries[head(path)]);
-				nested_state = updateFT(temp, head(path), tail(path), actual_file);
-				state[current_path][i].entries += nested_state;
+				nestedState = updateFT(temp, head(path), tail(path), actualFile);
+				state[currentPath][i].entries += nestedState;
 			}
 		}
 		
 		if (isEmpty(temp)){
-			state[current_path] += [dir((head(path):[]), 0, 0)];
-			state = updateFT(state, current_path, path, actual_file);
+			state[currentPath] += [dir((head(path):[]), 0, 0)];
+			state = updateFT(state, currentPath, path, actualFile);
 		}
 		
 		return state;
 	}
 	else{
-		state[current_path]?[] += [actual_file];
+		state[currentPath]?[] += [actualFile];
 		return state;
 	}
 }
@@ -63,12 +63,12 @@ private Color getComplexityColor(int cc){
 	else                                        return red;
 }
 
-public Figure createComplexityFigure(lrel[Declaration method, int size, int complexity] functions_with_size_and_complexity ){
+public Figure createComplexityFigure(lrel[Declaration method, int size, int complexity] functionsWithSizeAndComplexity){
 
 	list[Figure] temp = [];
 	int ts = 0;
 	map[str, Figure] detailPages = ();
-	for(fp <- functions_with_size_and_complexity){
+	for(fp <- functionsWithSizeAndComplexity){
 		ts += fp.size;
 		str hash = md5Hash(fp);
 		Figure detailHeader = box(text("<fp.method.name>()",valign(0.5),fontColor(contentTextColor)),fillColor(detailHeaderColor),vshrink(0.1));

@@ -18,7 +18,7 @@ int SIG_MAX_COMPLEXITY_LOW       = 10;
 int SIG_MAX_COMPLEXITY_MODERATE  = 20;
 int SIG_MAX_COMPLEXITY_HIGH      = 50;
 
-alias Rank = tuple[str string_representation, int numeric_representation];
+alias Rank = tuple[str stringRepresentation, int numericRepresentation];
 
 Rank plusplus = <"++",  2>;
 Rank plus     = <"+" ,  1>;
@@ -30,9 +30,9 @@ Rank minmin   = <"--", -2>;
 //	percentage in units with more than 30 lines of code should not exceed 20.1%.
 //	The percentage in units with more than 60 lines should not exceed 6.3%.
 
-public Rank getSIGVolumeRank(int lines_of_code){
+public Rank getSIGVolumeRank(int linesOfCode){
 	
-	num kloc = toReal(lines_of_code)/1000;
+	num kloc = toReal(linesOfCode)/1000;
 
 	if (kloc < SIG_JAVA_KLOC_PLUS_PLUS){
 		return plusplus;
@@ -134,15 +134,15 @@ private real roundTwoDigits(real n)
 
 public Rank calculateWeigedAverage(ranks){
 
-	int rank_count = 0;
-	int total_rank = 0;
+	int rankCount = 0;
+	int totalRank = 0;
 
 	for(r <- ranks){
-		rank_count += 1;
-		total_rank += r.numeric_representation;
+		rankCount += 1;
+		totalRank += r.numericRepresentation;
 	}
 	
-	int result = total_rank / rank_count;
+	int result = totalRank / rankCount;
 	
 	if     (result == 2 ) return plusplus;
 	elseif (result == 1 ) return plus; 

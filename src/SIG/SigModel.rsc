@@ -67,10 +67,10 @@ public str getSigReport(loc application){
 	Rank unitComplexityRank = getSIGUnitSizeRank(unitComplexity);
 	Rank duplicationRank    = getSIGDuplicationRank(duplication.percent);
 	
-	report += "volume score: <volumeRank.string_representation>" + "\n";
-	report += "unit size score: <unitSizeRank.string_representation>\n";
-	report += "unit complexity score: <unitComplexityRank.string_representation>\n";
-	report += "duplication score: <duplicationRank.string_representation>\n\n";
+	report += "volume score: <volumeRank.stringRepresentation>" + "\n";
+	report += "unit size score: <unitSizeRank.stringRepresentation>\n";
+	report += "unit complexity score: <unitComplexityRank.stringRepresentation>\n";
+	report += "duplication score: <duplicationRank.stringRepresentation>\n\n";
 	
 	list[Rank] analyzabilityArguments = [volumeRank, duplicationRank, unitSizeRank];
 	list[Rank] changeabilityArguments = [unitComplexityRank, duplicationRank];
@@ -80,14 +80,14 @@ public str getSigReport(loc application){
 	Rank changeabilityRank = calculateWeigedAverage(changeabilityArguments);
 	Rank testabilityRank   = calculateWeigedAverage(testabilityArguments);
 	
-	report += "analysability score: <analyzebilityRank.string_representation>\n";
-	report += "changability score: <changeabilityRank.string_representation>\n";
-	report += "testability score: <testabilityRank.string_representation>\n\n";
+	report += "analysability score: <analyzebilityRank.stringRepresentation>\n";
+	report += "changability score: <changeabilityRank.stringRepresentation>\n";
+	report += "testability score: <testabilityRank.stringRepresentation>\n\n";
 	
 	list[Rank] overallArguments = [analyzebilityRank, changeabilityRank, testabilityRank];
 	Rank overallRank = calculateWeigedAverage(overallArguments);
 	
-	report += "overall maintainability score: <overallRank.string_representation>\n";
+	report += "overall maintainability score: <overallRank.stringRepresentation>\n";
 	
 	
 	int endTime = ((realTime()-startTime)/1000);
