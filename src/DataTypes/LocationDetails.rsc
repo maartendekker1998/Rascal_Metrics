@@ -9,6 +9,9 @@ public alias Pair = tuple[int line, str file];
 public alias DuplicationItem = tuple[Pair src, Pair dest, str code];
 public alias UnitComplexity = tuple[lrel[Declaration, int, int] functionsWithSizeAndComplexity,map[str,real] complexity];
 public alias Metric = tuple[str report, DashboardData dashboard];
+public alias Rank = tuple[str stringRepresentation, int numericRepresentation];
+public alias MetricScore = tuple[Rank volumeRank, Rank unitSizeRank, Rank unitComplexityRank, Rank duplicationRank];
+public alias OveralScore = tuple[Rank analyzebilityRank, Rank changeabilityRank, Rank testabilityRank, Rank overallRank];
 
 public alias DashboardData = tuple
 [
@@ -19,6 +22,8 @@ public alias DashboardData = tuple
 	int linesOfCode,
 	int totalFunctions,
 	map[str,int] unitTests,
+	MetricScore metricScore,
+	OveralScore overalScore,
 	str executionTime
 ];
 

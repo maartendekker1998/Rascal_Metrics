@@ -19,8 +19,6 @@ int SIG_MAX_COMPLEXITY_LOW       = 10;
 int SIG_MAX_COMPLEXITY_MODERATE  = 20;
 int SIG_MAX_COMPLEXITY_HIGH      = 50;
 
-alias Rank = tuple[str stringRepresentation, int numericRepresentation];
-
 Rank plusplus = <"++",  2>;
 Rank plus     = <"+" ,  1>;
 Rank neutral  = <"o" ,  0>;

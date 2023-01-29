@@ -55,6 +55,8 @@ private Figure createDashboard(DashboardData dashboardData)
 	map[str,int] unitTestData = dashboardData.unitTests;
 	int linesOfCode = dashboardData.linesOfCode;
 	int totalFunctions = dashboardData.totalFunctions;
+	MetricScore metricScore = dashboardData.metricScore;
+	OveralScore overalScore = dashboardData.overalScore;
 	
 	str headerText = "Visualisation: Bart Janssen & Maarten Dekker";
 	
@@ -69,8 +71,8 @@ private Figure createDashboard(DashboardData dashboardData)
 	Figure unitSize = box(createUnitSizeBox(unitSizeData),fillColor(tileColor),shadow(true),shrink(0.8));
 	Figure lineOfCodeAndFunctions = box(createLineOfCodeAndFunctionBox(linesOfCode, totalFunctions),fillColor(tileColor),shadow(true),shrink(0.7));
 	Figure unitTests = box(createUnitTestBox(unitTestData),fillColor(tileColor),shadow(true),shrink(0.7));
-	Figure metricScores = box(fillColor(tileColor),shadow(true),shrink(0.8));
-	Figure totalScore = box(fillColor(tileColor),shadow(true),shrink(0.8));
+	Figure metricScores = box(createMetricBox(metricScore),fillColor(tileColor),shadow(true),shrink(0.8));
+	Figure totalScore = box(createOverallBox(overalScore),fillColor(tileColor),shadow(true),shrink(0.8));
 	
 	Figure row1 = grid([[box(text(dashboardData.name,fontSize(40),fontColor(contentTextColor)),lineColor(bodyColor),fillColor(bodyColor),resizable(false))]]);
 		Figure column1 = grid([
@@ -91,6 +93,55 @@ private Figure createDashboard(DashboardData dashboardData)
 	Figure mainBox = box(rows,lineColor(bodyColor),fillColor(bodyColor));
 	Figure dashboard = grid([[dashboardHeader],[mainBox]]);
 	return grid([[dashboard]]);
+}
+
+private Figure createMetricBox(MetricScore metricScore)
+{
+	int offset = 20;
+	Figure metricSubBox = box(text("Score",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
+	Figure metricVolume = box(text("  Volume:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
+	Figure metricVolumeNumber = box(text("<metricScore.volumeRank.stringRepresentation>",fontBold(true),fontColor(getColorBySIGScore(metricScore.volumeRank)),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+	Figure metricUnitSize = box(text("  Unit size:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
+	Figure metricUnitSizeNumber = box(text("<metricScore.unitSizeRank.stringRepresentation>",fontBold(true),fontColor(getColorBySIGScore(metricScore.unitSizeRank)),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+	Figure metricComplexity = box(text("  Complexity:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
+	Figure metricComplexityNumber = box(text("<metricScore.unitComplexityRank.stringRepresentation>",fontBold(true),fontColor(getColorBySIGScore(metricScore.unitComplexityRank)),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+	Figure metricDuplication = box(text("  Duplication:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
+	Figure metricDuplicationNumber = box(text("<metricScore.duplicationRank.stringRepresentation>",fontBold(true),fontColor(getColorBySIGScore(metricScore.duplicationRank)),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+
+	return grid([
+		[space(size(offset,offset),resizable(false)),space(vsize(offset),resizable(false)),space(vsize(offset),resizable(false))],
+		[space(size(offset,offset),resizable(false)),metricSubBox,space(size(offset,offset),resizable(false))],
+		[space(size(offset,offset),resizable(false)),metricVolume,metricVolumeNumber],
+		[space(size(offset,offset),resizable(false)),metricUnitSize,metricUnitSizeNumber],
+		[space(size(offset,offset),resizable(false)),metricComplexity,metricComplexityNumber],
+		[space(size(offset,offset),resizable(false)),metricDuplication,metricDuplicationNumber],
+		[space(hsize(offset),resizable(false)),space(),space()]
+		]);
+}
+
+private Figure createOverallBox(OveralScore overalScore)
+{
+	int offset = 20;
+	Figure metricSubBox = box(text("Score",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
+	Figure metricAnalyze = box(text("  Analysability:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
+	Figure metricAnalyzeNumber = box(text("<overalScore.analyzebilityRank.stringRepresentation>",fontBold(true),fontColor(getColorBySIGScore(overalScore.analyzebilityRank)),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+	Figure metricChangability = box(text("  Changability:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
+	Figure metricChangabilityNumber = box(text("<overalScore.changeabilityRank.stringRepresentation>",fontBold(true),fontColor(getColorBySIGScore(overalScore.changeabilityRank)),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+	Figure metricTestability = box(text("  Testability:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
+	Figure metricTestabilityNumber = box(text("<overalScore.testabilityRank.stringRepresentation>",fontBold(true),fontColor(getColorBySIGScore(overalScore.testabilityRank)),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+	Figure metricOverall = box(text("  Overall:",fontColor(contentTextColor),left()),lineColor(tileColor),fillColor(tileColor),vresizable(false),left());
+	Figure metricOverallNumber = box(text("<overalScore.overallRank.stringRepresentation>",fontBold(true),fontColor(getColorBySIGScore(overalScore.overallRank)),left()),lineColor(tileColor),fillColor(tileColor),resizable(false),hsize(100),left());
+
+	return grid([
+		[space(size(offset,offset),resizable(false)),space(vsize(offset),resizable(false)),space(vsize(offset),resizable(false))],
+		[space(size(offset,offset),resizable(false)),metricSubBox,space(size(offset,offset),resizable(false))],
+		[space(size(offset,offset),resizable(false)),metricAnalyze,metricAnalyzeNumber],
+		[space(size(offset,offset),resizable(false)),metricChangability,metricChangabilityNumber],
+		[space(size(offset,offset),resizable(false)),metricTestability,metricTestabilityNumber],
+		[space(hsize(offset),resizable(false)),space(),space()],
+		[space(size(offset,offset),resizable(false)),metricOverall,metricOverallNumber],
+		[space(hsize(offset),resizable(false)),space(),space()]
+		]);
 }
 
 private Figure createUnitComplexityBox(UnitComplexity unitComplexityData, bool selectable)
@@ -226,6 +277,12 @@ private Color getColorByUnitSizePercent(map[str,real] unitSizeData, str level)
 									(unitSizeData[level] <= 5 ? yellow : 
 									(unitSizeData[level] <= 6 ? orange : red));
 	return red;
+}
+
+private Color getColorBySIGScore(Rank SIGScore)
+{
+	int score = SIGScore.numericRepresentation;
+	return score == 2 ? green : (score == 1 ? yellow : (score == 0 ? orange : (score == -1 ? red : purple)));
 }
 
 private Color getColorByDuplicationPercent(real percent)

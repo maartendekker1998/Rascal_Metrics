@@ -65,6 +65,7 @@ public Metric getSigMetric(loc application){
 	Rank unitSizeRank       = getSIGUnitSizeRank(unitSize);
 	Rank unitComplexityRank = getSIGUnitSizeRank(unitComplexity);
 	Rank duplicationRank    = getSIGDuplicationRank(duplication.percent);
+	MetricScore metricScore = <volumeRank,unitSizeRank,unitComplexityRank,duplicationRank>;
 	
 	report += "volume score: <volumeRank.stringRepresentation>" + "\n";
 	report += "unit size score: <unitSizeRank.stringRepresentation>\n";
@@ -85,6 +86,7 @@ public Metric getSigMetric(loc application){
 	
 	list[Rank] overallArguments = [analyzebilityRank, changeabilityRank, testabilityRank];
 	Rank overallRank = calculateWeigedAverage(overallArguments);
+	OveralScore overalScore = <analyzebilityRank,changeabilityRank,testabilityRank,overallRank>;
 	
 	report += "overall maintainability score: <overallRank.stringRepresentation>";
 	
@@ -93,7 +95,7 @@ public Metric getSigMetric(loc application){
 	int minutes = (endTime % 3600) /60;
 	int seconds = endTime % 60;
 	str executionTime = "Execution time: <formatDate(hours)>:<formatDate(minutes)>:<formatDate(seconds)>";
-	DashboardData dashboardData = <application.authority,duplication,complexity,unitSize,volume,size(allFunctionsAndSizes),assertions,executionTime>;
+	DashboardData dashboardData = <application.authority,duplication,complexity,unitSize,volume,size(allFunctionsAndSizes),assertions,metricScore,overalScore,executionTime>;
 
 	return <report,dashboardData>;
 }
