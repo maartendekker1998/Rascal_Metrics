@@ -11,7 +11,7 @@ import util::Resources;
 import ProjectLoader::Loader;
 import DataTypes::LocationDetails;
 
-private alias FileLine = tuple[str file, int line];
+private alias FileLine = tuple[loc file, int line];
 
 Duplication duplicates = ();
 map[str,FileLine] chunkHashes = ();
@@ -83,13 +83,13 @@ public DuplicationData calculateDuplication(loc application)
 {
     reset();
     map[loc, list[str]] files = getFilesPerLocation(application);
-	for (file <- files) calculateDuplicationForFile(files[file], file.file);
+	for (file <- files) calculateDuplicationForFile(files[file], file);
 	int totalDuplicateLines = 0;
 	for (duplicate <- duplicates) totalDuplicateLines+=size(duplicates[duplicate]);
     return <percent(totalDuplicateLines, totalCodeLength), duplicates>;
 }
 
-private void addDuplicate(str src, int srcLine, str dest, int destLine, str codeLine)
+private void addDuplicate(loc src, int srcLine, loc dest, int destLine, str codeLine)
 {
 	if (src notin(duplicates)) duplicates+=(src:{});
 	duplicates[src]+=<{<src,srcLine>},{<dest,destLine>},codeLine>;
@@ -106,7 +106,7 @@ private void addDuplicate(str src, int srcLine, str dest, int destLine, str code
 	Parameters:
 	 list[str] code | the code of that file
 }
-private void calculateDuplicationForFile(list[str] code, str file)
+private void calculateDuplicationForFile(list[str] code, loc file)
 {
     rel[map[int, str],map[int, str]] lineMapping = mapLines(code);
     map[int, str] codes = getFirstFrom(domain(lineMapping));

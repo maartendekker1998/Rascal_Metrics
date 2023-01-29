@@ -23,7 +23,7 @@ private Color detailHeaderColor = nord1;
 private Color detailBodyColor = nord9;
 private Color contentTextColor = nord4;
 
-private DuplicationDetail createDetailOverlayBox(str file)
+private DuplicationDetail createDetailOverlayBox(loc file)
 {
 	int totalCodeSize = 0;
 	set[str] destFiles = {};
@@ -34,16 +34,18 @@ private DuplicationDetail createDetailOverlayBox(str file)
 	for (duplicate <- duplication[file])
 	{
 		int srcLine = takeFirstFrom(domain(invert(duplicate[0])))[0];
-		str srcFile = takeFirstFrom(range(invert(duplicate[0])))[0];
+		loc srcFile = takeFirstFrom(range(invert(duplicate[0])))[0];
 		int destLine = takeFirstFrom(domain(invert(duplicate[1])))[0];
-		str destFile = takeFirstFrom(range(invert(duplicate[1])))[0];
-		if (srcFile == destFile) hasRelationToItself = true;
-		duplicates+=<<srcLine, srcFile>,<destLine, destFile>, duplicate[2]>;
-		destFiles+={destFile};
+		loc destFile = takeFirstFrom(range(invert(duplicate[1])))[0];
+		str src = replaceFirst(srcFile.uri, "<srcFile.scheme>://","");
+		str dest = replaceFirst(destFile.uri, "<destFile.scheme>://","");
+		if (src == dest) hasRelationToItself = true;
+		duplicates+=<<srcLine, srcFile.file>,<destLine, destFile.file>, duplicate[2]>;
+		destFiles+={destFile.file};
 		totalCodeSize+=1;
-		if (destFile notin(codeLinesPerDestFile)) codeLinesPerDestFile+=(destFile:[]);
-		list[int] codeLines = codeLinesPerDestFile[destFile];
-		codeLinesPerDestFile[destFile] = codeLines+=destLine;
+		if (destFile.file notin(codeLinesPerDestFile)) codeLinesPerDestFile+=(destFile.file:[]);
+		list[int] codeLines = codeLinesPerDestFile[destFile.file];
+		codeLinesPerDestFile[destFile.file] = codeLines+=destLine;
 	}
 	list[DuplicationItem] sortedDuplicates = sort([<s,d,c> | <s,d,c> <- duplicates]);
 	map[rel[str,str],rel[int,int,str]] code = ();
@@ -54,10 +56,10 @@ private DuplicationDetail createDetailOverlayBox(str file)
 		code[{<x.src.file,x.dest.file>}] = linesWithCode+=<x.src.line,x.dest.line,x.code>;
 	}
 	createCodeView(code);
-	Figure src = box(text("<totalCodeSize>"),size(50), fillColor(green),renderPopup(file));
-	list[Figure] destinations = createDuplicationDestinationBoxes(destFiles, codeLinesPerDestFile, file);
+	Figure src = box(text("<totalCodeSize>"),size(50), fillColor(green),renderPopup(file.file));
+	list[Figure] destinations = createDuplicationDestinationBoxes(destFiles, codeLinesPerDestFile, file.file);
 	Figure duplicationTree = box(tree(src,destinations, gap(20)), valign(0.5),fillColor(detailBodyColor));
-	Figure detailHeader = box(text("<file>",valign(0.5),fontColor(contentTextColor)),fillColor(detailHeaderColor),vshrink(0.1));
+	Figure detailHeader = box(text("<file.file>",valign(0.5),fontColor(contentTextColor)),fillColor(detailHeaderColor),vshrink(0.1));
 	Figure detailBody = grid([[detailHeader],[duplicationTree]]);
 	return <box(detailBody,shadow(true)),size(destFiles),hasRelationToItself>;
 }
@@ -134,15 +136,15 @@ public Figure createDuplicationFigure(DuplicationData duplication)
 			[space(),space(),space()],
 			[space(),space(),space()]]);
 		
-		detailPages+=(file:box(details.body, shrink(0.5,0.9), onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("duplication");return true;})));
+		detailPages+=(file.file:box(details.body, shrink(0.5,0.9), onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("duplication");return true;})));
 		Figure src = (details.hasRelationToItself) ?
-			box(relationToItselfBox,fillColor(getColorByRelationAmount(details)), renderPopup(file,size(duplicationData.duplication[file])))
-			: box(fillColor(getColorByRelationAmount(details)), renderPopup(file,size(duplicationData.duplication[file])));
+			box(relationToItselfBox,fillColor(getColorByRelationAmount(details)), renderPopup(file.file,size(duplicationData.duplication[file])))
+			: box(fillColor(getColorByRelationAmount(details)), renderPopup(file.file,size(duplicationData.duplication[file])));
 		Figure srcWithoutPopup = (details.hasRelationToItself) ? 
 			box(relationToItselfBox,fillColor(getColorByRelationAmount(details)))
 			: box(fillColor(getColorByRelationAmount(details)));
-		graph+=box(src, duplicationBoxClick(file),area(size(duplicationData.duplication[file])));
-		graphWithoutPopup+=box(srcWithoutPopup, duplicationBoxClick(file),area(size(duplicationData.duplication[file])));
+		graph+=box(src, duplicationBoxClick(file.file),area(size(duplicationData.duplication[file])));
+		graphWithoutPopup+=box(srcWithoutPopup, duplicationBoxClick(file.file),area(size(duplicationData.duplication[file])));
 	}
 	for (detailPage <- detailPages) pages+=(detailPage:overlay([grid([metricsHeader, [treemap(graphWithoutPopup)]]), detailPages[detailPage]]));
 	return grid([metricsHeader, [treemap(graph)]]);
