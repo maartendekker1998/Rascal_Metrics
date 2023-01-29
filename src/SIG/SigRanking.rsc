@@ -3,6 +3,7 @@ module SIG::SigRanking
 import String;
 import util::Math;
 import lang::java::m3::AST;
+import DataTypes::LocationDetails;
 
 int SIG_JAVA_KLOC_PLUS_PLUS = 66;
 int SIG_JAVA_KLOC_PLUS = 246;
@@ -82,7 +83,7 @@ public map[str key, real percentage] computeSIGUnitComplexityRiskCategories(lrel
 	return risks;
 }
 
-public Rank getSIGDuplicationRank(int percentage){
+public Rank getSIGDuplicationRank(real percentage){
 
 	if    (percentage < 3)	return plusplus;
 	elseif(percentage < 5)  return plus;
@@ -127,9 +128,14 @@ private real roundTwoDigits(real n)
 	return toReal(substring(toString(n),0,findFirst(toString(n),".")+2));
 }
 
+public DuplicationData getDuplicationPercent(tuple[int,int,Duplication] duplication)
+{
+	real totalDuplicateLines = toReal(duplication[0]);
+	real totalCodeLength = toReal(duplication[1]);
+	return <roundTwoDigits((totalDuplicateLines/totalCodeLength)*100),duplication[2]>;
+}
 
 // ISO 9126 categorisation helper function
-
 public Rank calculateWeigedAverage(ranks){
 
 	int rankCount = 0;

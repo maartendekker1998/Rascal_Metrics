@@ -79,14 +79,14 @@ public map[loc, list[str]] getFilesPerLocation(loc application)
 	 loc application | project
 	returns integer as the percentage, actual calculation is 'duplicate lines' / 'total lines' * 100
 }
-public DuplicationData calculateDuplication(loc application)
+public tuple[int,int,Duplication] calculateDuplication(loc application)
 {
     reset();
     map[loc, list[str]] files = getFilesPerLocation(application);
 	for (file <- files) calculateDuplicationForFile(files[file], file);
 	int totalDuplicateLines = 0;
 	for (duplicate <- duplicates) totalDuplicateLines+=size(duplicates[duplicate]);
-    return <percent(totalDuplicateLines, totalCodeLength), duplicates>;
+    return <totalDuplicateLines, totalCodeLength, duplicates>;
 }
 
 private void addDuplicate(loc src, int srcLine, loc dest, int destLine, str codeLine)

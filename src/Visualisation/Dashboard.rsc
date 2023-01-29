@@ -58,8 +58,7 @@ private Figure createDashboard(DashboardData dashboardData)
 	
 	str headerText = "Visualisation: Bart Janssen & Maarten Dekker";
 	
-	Figure unitComplexity = 
-	computeFigure(Figure()
+	Figure unitComplexity = computeFigure(Figure()
    	{
    		return box(createUnitComplexityBox(unitComplexityData,pageIsSelected["unit complexity"]),fillColor(pageIsSelected["unit complexity"] ? tileSelectedColor:tileColor),shadow(true),shrink(0.8),enterTile("unit complexity"), leaveTile("unit complexity"));
 	});
@@ -69,7 +68,6 @@ private Figure createDashboard(DashboardData dashboardData)
 	});
 	Figure unitSize = box(createUnitSizeBox(unitSizeData),fillColor(tileColor),shadow(true),shrink(0.8));
 	Figure lineOfCodeAndFunctions = box(createLineOfCodeAndFunctionBox(linesOfCode, totalFunctions),fillColor(tileColor),shadow(true),shrink(0.7));
-	
 	Figure unitTests = box(createUnitTestBox(unitTestData),fillColor(tileColor),shadow(true),shrink(0.7));
 	Figure metricScores = box(fillColor(tileColor),shadow(true),shrink(0.8));
 	Figure totalScore = box(fillColor(tileColor),shadow(true),shrink(0.8));
@@ -230,7 +228,7 @@ private Color getColorByUnitSizePercent(map[str,real] unitSizeData, str level)
 	return red;
 }
 
-private Color getColorByDuplicationPercent(int percent)
+private Color getColorByDuplicationPercent(real percent)
 {
 	return (percent <= 3 ? green :
 		   (percent <= 5 ? yellow :

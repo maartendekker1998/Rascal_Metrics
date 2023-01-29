@@ -8,7 +8,6 @@ import Metrics::UnitComplexity;
 import Metrics::Duplication;
 import Metrics::UnitSize;
 import Metrics::UnitTestCoverage;
-import Visualisation::Dashboard;
 import lang::java::m3::AST;
 import DataTypes::LocationDetails;
 import String;
@@ -18,11 +17,11 @@ import util::Math;
 private str formatDate(int x) = size(toString(x)) == 1 ? "0<x>" : "<x>";
 
 // This function will trigger all the metrics and compose the report
-public str getSigReport(loc application){
+public Metric getSigMetric(loc application){
 
 	int startTime = realTime();
 	// Duplication
-	DuplicationData duplication = calculateDuplication(application);
+	DuplicationData duplication = getDuplicationPercent(calculateDuplication(application));
 	
 	// Volume
 	int volume = calculateVolume(application);
@@ -87,8 +86,7 @@ public str getSigReport(loc application){
 	list[Rank] overallArguments = [analyzebilityRank, changeabilityRank, testabilityRank];
 	Rank overallRank = calculateWeigedAverage(overallArguments);
 	
-	report += "overall maintainability score: <overallRank.stringRepresentation>\n";
-	
+	report += "overall maintainability score: <overallRank.stringRepresentation>";
 	
 	int endTime = ((realTime()-startTime)/1000);
 	int hours = endTime / 3600;
@@ -96,9 +94,8 @@ public str getSigReport(loc application){
 	int seconds = endTime % 60;
 	str executionTime = "Execution time: <formatDate(hours)>:<formatDate(minutes)>:<formatDate(seconds)>";
 	DashboardData dashboardData = <application.authority,duplication,complexity,unitSize,volume,size(allFunctionsAndSizes),assertions,executionTime>;
-	renderDashboard(dashboardData);
 
-	return report;
+	return <report,dashboardData>;
 }
 
 lrel[Declaration method, int size] getUnitsAndSize(loc application){
