@@ -83,23 +83,14 @@ public DuplicationData calculateDuplication(loc application)
 {
     reset();
     map[loc, list[str]] files = getFilesPerLocation(application);
-	for (file <- files)
-	{
-		calculateDuplicationForFile(files[file], file.file);
-		//if (size(duplicates) > 2)
-		//break;
-	}
+	for (file <- files) calculateDuplicationForFile(files[file], file.file);
 	int totalDuplicateLines = 0;
 	for (duplicate <- duplicates) totalDuplicateLines+=size(duplicates[duplicate]);
-	//println(duplicates);
-	println("size m <totalDuplicateLines>");
-	println(totalCodeLength);
     return <percent(totalDuplicateLines, totalCodeLength), duplicates>;
 }
 
 private void addDuplicate(str src, int srcLine, str dest, int destLine, str codeLine)
 {
-	//println("src: <src>:<srcLine> dest: <dest>:<destLine>");
 	if (src notin(duplicates)) duplicates+=(src:{});
 	duplicates[src]+=<{<src,srcLine>},{<dest,destLine>},codeLine>;
 }
@@ -117,7 +108,6 @@ private void addDuplicate(str src, int srcLine, str dest, int destLine, str code
 }
 private void calculateDuplicationForFile(list[str] code, str file)
 {
-	//println("<file>");
     rel[map[int, str],map[int, str]] lineMapping = mapLines(code);
     map[int, str] codes = getFirstFrom(domain(lineMapping));
     map[int, str] original = getFirstFrom(range(lineMapping));
@@ -131,7 +121,6 @@ private void calculateDuplicationForFile(list[str] code, str file)
         {
 			for (i <- [0..minimumLength])
 			{
-				//println("<startLine+i> <original[startLine+i]>");
 				addDuplicate(chunkHashes[hash].file, chunkHashes[hash].line+i, file, startLine+i, original[startLine+i]);
 			}
         }
