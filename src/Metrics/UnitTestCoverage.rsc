@@ -3,7 +3,7 @@ module Metrics::UnitTestCoverage
 import lang::java::m3::AST;
 import ProjectLoader::Loader;
 
-map[loc,Declaration] unitTestFiles = ();
+private map[loc,Declaration] unitTestFiles = ();
 
 public map[str,int] calculateUnitTestCoverage(loc application, lrel[Declaration method, int size] allFunctionsAndSizes)
 {

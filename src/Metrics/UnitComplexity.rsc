@@ -1,6 +1,5 @@
 module Metrics::UnitComplexity
 
-import IO;
 import lang::java::m3::AST;
 
 public lrel[Declaration, int, int] getComplexity(lrel[Declaration method, int size] allFunctionsAndSizes){
@@ -12,14 +11,10 @@ public lrel[Declaration, int, int] getComplexity(lrel[Declaration method, int si
 		allFunctionsWithSizeAndComplexity += <f.method, f.size, cc>;
 	}
 	
-	//for(x <- allFunctionsWithSizeAndComplexity){
-	//	println("Method <x.method.name> with size <x.size> has complexity <x.complexity>\n");
-	//}
-	
 	return allFunctionsWithSizeAndComplexity;
 }
 
-int computeComplexity(Declaration method){
+private int computeComplexity(Declaration method){
 	
 	// Posted by Rascal Core Developer
 	// https://stackoverflow.com/questions/40064886/obtaining-cyclomatic-complexity/40069656#40069656
@@ -39,8 +34,6 @@ int computeComplexity(Declaration method){
         case \infix(_,"&&",_) : result += 1;
         case \infix(_,"||",_) : result += 1;
     }
-    
-    //println("method <method.name> has complexity <result>");
-    
+        
     return result;
 }

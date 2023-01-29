@@ -6,17 +6,16 @@ import Set;
 import List;
 import String;
 import Relation;
-import util::Math;
 import util::Resources;
 import ProjectLoader::Loader;
 import DataTypes::LocationDetails;
 
 private alias FileLine = tuple[loc file, int line];
 
-Duplication duplicates = ();
-map[str,FileLine] chunkHashes = ();
-int totalCodeLength = 0;
-int minimumLength=6;
+private Duplication duplicates = ();
+private map[str,FileLine] chunkHashes = ();
+private int totalCodeLength = 0;
+private int minimumLength=6;
 
 @doc
 {

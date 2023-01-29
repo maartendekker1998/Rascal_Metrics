@@ -21,7 +21,6 @@ public int calculateVolume(loc application){
 	return volume;
 }
 
-
 // calculate the lines of actual code per file
 // comments do not count
 public int calculateLOC(list[str] lines, list[LocationDetails] comments, int startIndex){
@@ -44,10 +43,8 @@ public int calculateLOC(list[str] lines, list[LocationDetails] comments, int sta
 	
 	
 	map[int, LocationDetails] singleLineComments = (c.beginline:c | c <- comments, c.beginline == c.endline);
-	//println("the single line comments are: <singleLineComments>");
 		
 	list[LocationDetails] multiLineComments = [ c | c <- comments, c.beginline != c.endline];
-	//println("the multi line comments are: <multiLineComments>");
 	
 	list[int] multiLineBegin = [];
 	list[int] multiLineEnd = [];
@@ -110,7 +107,7 @@ public int calculateLOC(list[str] lines, list[LocationDetails] comments, int sta
 	return LOC;
 }
 
-public map[loc, list[str]] getFilesPerLocation(loc application){
+private map[loc, list[str]] getFilesPerLocation(loc application){
 	
 	Resource r = getResourceFromEclipseProject(application);
 	set[loc] fileLocations = getJavaFileLocationsFromResource(r);

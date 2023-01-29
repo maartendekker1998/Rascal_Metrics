@@ -1,21 +1,17 @@
 module Visualisation::ComplexityVisual
 
 import IO;
-import String;
 import SIG::SigModel;
 import lang::java::m3::AST;
 import vis::Render;
 import vis::KeySym;
 import vis::Figure;
-import List;
-import Map;
-import Type;
 import Visualisation::Dashboard;
 import DataTypes::Color;
 
-int SIG_MAX_COMPLEXITY_LOW       = 10;
-int SIG_MAX_COMPLEXITY_MODERATE  = 20;
-int SIG_MAX_COMPLEXITY_HIGH      = 50;
+private int SIG_MAX_COMPLEXITY_LOW       = 10;
+private int SIG_MAX_COMPLEXITY_MODERATE  = 20;
+private int SIG_MAX_COMPLEXITY_HIGH      = 50;
 
 private Color detailHeaderColor = nord1;
 private Color detailBodyColor = nord9;

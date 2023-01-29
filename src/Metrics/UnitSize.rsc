@@ -8,9 +8,7 @@ import IO;
 import String;
 import Metrics::Volume;
 
-
 public lrel[Declaration method, int size] calculateUnitsAndSize(application){
-
 
 	map[loc, list[LocationDetails]] comments = getComments(application);
 	

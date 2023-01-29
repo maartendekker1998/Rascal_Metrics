@@ -5,25 +5,25 @@ import util::Math;
 import lang::java::m3::AST;
 import DataTypes::LocationDetails;
 
-int SIG_JAVA_KLOC_PLUS_PLUS = 66;
-int SIG_JAVA_KLOC_PLUS = 246;
-int SIG_JAVA_KLOC_O = 665;
-int SIG_JAVA_KLOC_MIN = 1310;
+private int SIG_JAVA_KLOC_PLUS_PLUS = 66;
+private int SIG_JAVA_KLOC_PLUS = 246;
+private int SIG_JAVA_KLOC_O = 665;
+private int SIG_JAVA_KLOC_MIN = 1310;
 
-str SIG_LOW_COMPLEXITY_KEY       = "simple";
-str SIG_MODERATE_COMPLEXITY_KEY  = "moderate";
-str SIG_HIGH_COMPLEXITY_KEY      = "high";
-str SIG_VERY_HIGH_COMPLEXITY_KEY = "very high";
+private str SIG_LOW_COMPLEXITY_KEY       = "simple";
+private str SIG_MODERATE_COMPLEXITY_KEY  = "moderate";
+private str SIG_HIGH_COMPLEXITY_KEY      = "high";
+private str SIG_VERY_HIGH_COMPLEXITY_KEY = "very high";
 
-int SIG_MAX_COMPLEXITY_LOW       = 10;
-int SIG_MAX_COMPLEXITY_MODERATE  = 20;
-int SIG_MAX_COMPLEXITY_HIGH      = 50;
+private int SIG_MAX_COMPLEXITY_LOW       = 10;
+private int SIG_MAX_COMPLEXITY_MODERATE  = 20;
+private int SIG_MAX_COMPLEXITY_HIGH      = 50;
 
-Rank plusplus = <"++",  2>;
-Rank plus     = <"+" ,  1>;
-Rank neutral  = <"o" ,  0>;
-Rank min      = <"-" , -1>;
-Rank minmin   = <"--", -2>;
+private Rank plusplus = <"++",  2>;
+private Rank plus     = <"+" ,  1>;
+private Rank neutral  = <"o" ,  0>;
+private Rank min      = <"-" , -1>;
+private Rank minmin   = <"--", -2>;
 
 //	The percentage of lines of code residing in units with more than 15 lines of code should not exceed 44.0%.
 //	percentage in units with more than 30 lines of code should not exceed 20.1%.
@@ -50,7 +50,7 @@ public Rank getSIGVolumeRank(int linesOfCode){
 	}
 }
 
-public str getSIGComplexityRisk(int cc){
+private str getSIGComplexityRisk(int cc){
 
 	if      (cc <= SIG_MAX_COMPLEXITY_LOW)      { return SIG_LOW_COMPLEXITY_KEY;       }
 	else if (cc <= SIG_MAX_COMPLEXITY_MODERATE) { return SIG_MODERATE_COMPLEXITY_KEY;  }	

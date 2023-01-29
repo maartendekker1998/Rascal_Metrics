@@ -9,7 +9,6 @@ import lang::java::m3::AST;
 import Set;
 import List;
 import String;
-import util::Math;
 import Relation;
 import Metrics::Duplication;
 import DataTypes::LocationDetails;

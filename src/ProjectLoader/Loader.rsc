@@ -17,7 +17,7 @@ public set[loc] getJavaFileLocationsFromResource(Resource r) {
 	return fileList;
 }
 
-public map[loc, list[str]] getJavaFilesFromLocations (set[loc] fileLocations){
+public map[loc, list[str]] getJavaFilesFromLocations(set[loc] fileLocations){
 	
 	map[loc, list[str]] files = ();
 	
@@ -28,7 +28,7 @@ public map[loc, list[str]] getJavaFilesFromLocations (set[loc] fileLocations){
 	return files;
 }
 
-public map[loc, list[str]] getFilesPerLocation(loc application){
+private map[loc, list[str]] getFilesPerLocation(loc application){
 	
 	Resource r = getResourceFromEclipseProject(application);
 	set[loc] fileLocations = getJavaFileLocationsFromResource(r);

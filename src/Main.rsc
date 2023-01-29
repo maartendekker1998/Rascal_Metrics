@@ -1,15 +1,13 @@
 module Main
 
 import IO;
-import ProjectLoader::Loader;
 import SIG::SigModel;
-import Metrics::Volume;
 import Visualisation::Dashboard;
 import DataTypes::LocationDetails;
 
-loc application = |project://smallsql/|;
+private loc application = |project://JabberPoint/|;
 
-void main()
+public void main()
 {
 	Metric metric = getSigMetric(application);
 	println(metric.report);

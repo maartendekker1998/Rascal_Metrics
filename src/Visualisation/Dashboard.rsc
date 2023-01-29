@@ -1,22 +1,16 @@
 module Visualisation::Dashboard
 
-import IO;
 import vis::Figure;
 import vis::Render;
 import vis::KeySym;
 import Visualisation::ComplexityVisual;
 import Visualisation::DuplicationVisual;
-import lang::java::m3::AST;
-import Set;
-import List;
-import Relation;
-import Metrics::Duplication;
 import DataTypes::LocationDetails;
 import DataTypes::Color;
 
 public map[str,Figure] pages = ();
-private str currentPage;
 public list[Figure] metricsHeader;
+private str currentPage;
 private map[str, bool] pageIsSelected = ();
 
 private Color headerColor = nord0;

@@ -1,6 +1,5 @@
 module SIG::SigModel
 
-import IO;
 import List;
 import SIG::SigRanking;
 import Metrics::Volume;
@@ -100,10 +99,10 @@ public Metric getSigMetric(loc application){
 	return <report,dashboardData>;
 }
 
-lrel[Declaration method, int size] getUnitsAndSize(loc application){
+private lrel[Declaration method, int size] getUnitsAndSize(loc application){
 	return calculateUnitsAndSize(application);
 }
 
-lrel[Declaration, int, int] getCyclomaticComplexity(allFunctionsAndSizes){
+private lrel[Declaration, int, int] getCyclomaticComplexity(allFunctionsAndSizes){
 	return getComplexity(allFunctionsAndSizes);
 }
