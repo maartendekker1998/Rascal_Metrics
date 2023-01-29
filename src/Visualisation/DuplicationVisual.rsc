@@ -131,7 +131,7 @@ public Figure createDuplicationFigure(DuplicationData duplication)
 		//int i = (length == 1 ? 3 : (length == 2 ? 8 : (length == 3 ? 20 : 30)));
 		//Figure relationToItselfBox = hcat([ellipse(fillColor(purple),resizable(false),size(i,i),top()),space()]);
 		Figure relationToItselfBox = grid([
-			[ellipse(fillColor(purple),aspectRatio(1.0),left(),top(),shadow(true),shadowPos(5,5)),space(),space()],
+			[ellipse(fillColor(lightBlue),aspectRatio(1.0),left(),top(),shadow(true),shadowPos(5,5)),space(),space()],
 			[space(),space(),space()],
 			[space(),space(),space()]]);
 		

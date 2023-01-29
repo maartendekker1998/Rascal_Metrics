@@ -5,7 +5,7 @@ import SIG::SigModel;
 import Visualisation::Dashboard;
 import DataTypes::LocationDetails;
 
-private loc application = |project://JabberPoint/|;
+private loc application = |project://hsqldb/|;
 
 public void main()
 {
