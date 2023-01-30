@@ -5,7 +5,10 @@ import ProjectLoader::Loader;
 import lang::java::jdt::m3::Core;
 import String;
 
-// gets all the documentation out of a application
+@doc
+{
+	gets all the documentation (comments) out of an application
+}
 public map[loc, list[LocationDetails]] getComments(loc application){
 	
 	M3 model = getM3ModelFromEclipseProject(application);

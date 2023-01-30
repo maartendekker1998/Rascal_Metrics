@@ -2,6 +2,10 @@ module Metrics::UnitComplexity
 
 import lang::java::m3::AST;
 
+@doc
+{
+	Calculates the complexity, for all functions
+}
 public lrel[Declaration, int, int] getComplexity(lrel[Declaration method, int size] allFunctionsAndSizes){
 
 	lrel[Declaration method, int size, int complexity] allFunctionsWithSizeAndComplexity = [];
@@ -14,11 +18,14 @@ public lrel[Declaration, int, int] getComplexity(lrel[Declaration method, int si
 	return allFunctionsWithSizeAndComplexity;
 }
 
+@doc
+{
+	Visits the method and increases the complexity if a match has been found,
+	the cases used here are recommended by a Rascal Core Developer
+	- https://stackoverflow.com/questions/40064886/obtaining-cyclomatic-complexity/40069656#40069656
+}
 private int computeComplexity(Declaration method){
-	
-	// Posted by Rascal Core Developer
-	// https://stackoverflow.com/questions/40064886/obtaining-cyclomatic-complexity/40069656#40069656
-	
+
 	int result = 1;
     visit (method.impl) {
         case \if(_,_) : result += 1;

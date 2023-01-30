@@ -7,6 +7,10 @@ import util::Resources;
 import Helpers::Documentation;
 import DataTypes::LocationDetails;
 
+@doc
+{
+	Calculates volume of a given application
+}
 public int calculateVolume(loc application){
 
 	map[loc, list[LocationDetails]] commentsPerFile = getComments(application);
@@ -21,8 +25,10 @@ public int calculateVolume(loc application){
 	return volume;
 }
 
-// calculate the lines of actual code per file
-// comments do not count
+@doc
+{
+	Calculates the lines of actual code per file, comments do not count
+}
 public int calculateLOC(list[str] lines, list[LocationDetails] comments, int startIndex){
 
 	int LOC = 0;
@@ -40,7 +46,6 @@ public int calculateLOC(list[str] lines, list[LocationDetails] comments, int sta
 	//    * on the first line, it may contain code before the start of the multiline comment
 	//    * on the last line, it may contain code after the end of the multiline comment
 	//    * on the lines inbetween, no code can exsist
-	
 	
 	map[int, LocationDetails] singleLineComments = (c.beginline:c | c <- comments, c.beginline == c.endline);
 		
@@ -107,6 +112,10 @@ public int calculateLOC(list[str] lines, list[LocationDetails] comments, int sta
 	return LOC;
 }
 
+@doc
+{
+	Obtains all the files per location of an application
+}
 private map[loc, list[str]] getFilesPerLocation(loc application){
 	
 	Resource r = getResourceFromEclipseProject(application);

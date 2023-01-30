@@ -30,7 +30,7 @@ public Metric getSigMetric(loc application){
 	map[str,real] unitSize = computeSIGUnitSizeRank(allFunctionsAndSizes);
 	
 	// Unit tests
-	map[str,int] assertions = calculateUnitTestCoverage(application, allFunctionsAndSizes);	
+	map[str,int] assertions = calculateUnitTests(application, allFunctionsAndSizes);	
 
 	// Complexity
 	lrel[Declaration, int, int] functionsWithSizeAndComplexity = getCyclomaticComplexity(allFunctionsAndSizes);

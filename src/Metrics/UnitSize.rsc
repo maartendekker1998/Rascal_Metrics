@@ -8,6 +8,12 @@ import IO;
 import String;
 import Metrics::Volume;
 
+@doc
+{
+	Calculates units with their corresponding sizes, constructors 
+	are also counted as functions, interface declarations are not
+	calculated, only functions that has an implementation body.
+}
 public lrel[Declaration method, int size] calculateUnitsAndSize(application){
 
 	map[loc, list[LocationDetails]] comments = getComments(application);
@@ -31,6 +37,10 @@ public lrel[Declaration method, int size] calculateUnitsAndSize(application){
 	return allFunctionsAndSizes;
 }
 
+@doc
+{
+	Adds a matched function to a list of functions and sizes.
+}
 private tuple[Declaration method, int size] addFunction(function, map[loc, list[LocationDetails]] comments)
 {
 	list[str] functionLines = readFileLines(function.src);				

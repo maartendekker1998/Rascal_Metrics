@@ -5,14 +5,24 @@ import ProjectLoader::Loader;
 
 private map[loc,Declaration] unitTestFiles = ();
 
-public map[str,int] calculateUnitTestCoverage(loc application, lrel[Declaration method, int size] allFunctionsAndSizes)
+@doc
+{
+	Calculates unit tests and returns a map consisting them.
+}
+public map[str,int] calculateUnitTests(loc application, lrel[Declaration method, int size] allFunctionsAndSizes)
 {
 	unitTestFiles = ();
-	map[str,int] unitTestCoverage = countAsserts(application);
-	unitTestCoverage += calculateCoverage();
-	return unitTestCoverage;
+	map[str,int] unitTests = countAsserts(application);
+	unitTests += countUnitTests();
+	return unitTests;
 }
 
+@doc
+{
+	Counts asset checks in the unittest framework, all posible 
+	asserts are checked and counted as an assert.
+	Fail asserts are also counted
+}
 private map[str,int] countAsserts(loc application)
 {
 	set[loc] files = getJavaFileLocationsFromResource(getResourceFromEclipseProject(application));
@@ -38,7 +48,11 @@ private map[str,int] countAsserts(loc application)
 	return ("assert":asserts, "fail":fails);
 }
 
-private map[str,int] calculateCoverage()
+@doc
+{
+	Counts unittest functions
+}
+private map[str,int] countUnitTests()
 {
 	int unitTestFunctions = 0;
 	for (file <- unitTestFiles)

@@ -19,8 +19,7 @@ private int minimumLength=6;
 
 @doc
 {
-	Resets the global values to default. Otherwise when the function is called 
-	multiple times, the values will be reused.
+	Resets the global values to default.
 }
 private void reset()
 {
@@ -31,13 +30,8 @@ private void reset()
 
 @doc
 {
-	Maps linenumbers with their corresponding line
-	Import statements are not added to the list, but they are 
-	 included in the totalCodeLength for the total percentage
-	 calculation.
-	Parameters:
-	 list[str] code | The code to map
-	returns a map with linenumber mappings to the corresponding line.
+	Maps linenumbers with their corresponding codeline and
+	returns this data as a relation
 }
 private rel[map[int, str],map[int, str]] mapLines(list[str] code)
 {
@@ -59,10 +53,6 @@ private rel[map[int, str],map[int, str]] mapLines(list[str] code)
 @doc
 {
 	Creates a map with files and their lines of code from a project
-	Parameters:
-	 loc application | project
-	returns a map with files and their code
-	
 }
 public map[loc, list[str]] getFilesPerLocation(loc application)
 {
@@ -73,10 +63,8 @@ public map[loc, list[str]] getFilesPerLocation(loc application)
 
 @doc
 {
-	Calculate the final duplication percentage, this calculates ofer all the files provided
-	Parameters:
-	 loc application | project
-	returns integer as the percentage, actual calculation is 'duplicate lines' / 'total lines' * 100
+	Startpoint of the duplication calculation, calculates duplication
+	for all the files in the application and returns a dataset of this
 }
 public tuple[int,int,Duplication] calculateDuplication(loc application)
 {
@@ -88,6 +76,10 @@ public tuple[int,int,Duplication] calculateDuplication(loc application)
     return <totalDuplicateLines, totalCodeLength, duplicates>;
 }
 
+@doc
+{
+	combines data consisting a duplicate and adds it to a map
+}
 private void addDuplicate(loc src, int srcLine, loc dest, int destLine, str codeLine)
 {
 	if (src notin(duplicates)) duplicates+=(src:{});
@@ -100,10 +92,9 @@ private void addDuplicate(loc src, int srcLine, loc dest, int destLine, str code
 	It starts with line number 1, and iterates through the size of the 
 	 mapping plus 1 since lines are starting on 1 and not on 0.
 	It creates chunks of a minimum length lines (default 6 in SIG)
-	 those chunks are hashed and stored in a map with the first found line, if a hash later found again
-	 which already exists in the map, then it means a duplicate has been found.
-	Parameters:
-	 list[str] code | the code of that file
+	 those chunks are hashed and stored in a map with the first found line, if a 
+	 hash later is found again which already exists in the map, 
+	 then it means a duplicate has been found and this is added to tue duplicates
 }
 private void calculateDuplicationForFile(list[str] code, loc file)
 {
