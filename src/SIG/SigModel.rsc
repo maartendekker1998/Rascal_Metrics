@@ -84,7 +84,7 @@ public Metric getSigMetric(loc application){
 	Rank testabilityRank   = calculateWeigedAverage(testabilityArguments);
 	
 	report += "analysability score: <analyzebilityRank.stringRepresentation>\n";
-	report += "changability score: <changeabilityRank.stringRepresentation>\n";
+	report += "changeability score: <changeabilityRank.stringRepresentation>\n";
 	report += "testability score: <testabilityRank.stringRepresentation>\n\n";
 	
 	list[Rank] overallArguments = [analyzebilityRank, changeabilityRank, testabilityRank];
