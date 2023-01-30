@@ -17,41 +17,10 @@ private Color detailHeaderColor = nord1;
 private Color detailBodyColor = nord9;
 private Color contentTextColor = nord4;
 
-private data FileTree 
-          = fp(str uri, int size, int complexity)
-		  | dir(map[str uri, list[FileTree] childs] entries, int size, int complexity)
-		  ;
-		  
-private map[str, list[FileTree]] updateFT(map[str uri, list[FileTree] childs] state, str currentPath, list[str] path, FileTree actualFile){
-
-	if (size(path) > 0){
-				
-		map[str uri, list[FileTree] childs] temp = ();
-		
-		for(entry <- state[currentPath]){
-
-			if(head(path) in entry.entries.uri)
-			{
-				i = indexOf(state[currentPath], entry);
-				temp = (head(path):entry.entries[head(path)]);
-				nestedState = updateFT(temp, head(path), tail(path), actualFile);
-				state[currentPath][i].entries += nestedState;
-			}
-		}
-		
-		if (isEmpty(temp)){
-			state[currentPath] += [dir((head(path):[]), 0, 0)];
-			state = updateFT(state, currentPath, path, actualFile);
-		}
-		
-		return state;
-	}
-	else{
-		state[currentPath]?[] += [actualFile];
-		return state;
-	}
+@doc
+{
+	This gets the color of a box based on its complexity
 }
-
 private Color getComplexityColor(int cc){
 	if      (cc <= SIG_MAX_COMPLEXITY_LOW)      return green;
 	else if (cc <= SIG_MAX_COMPLEXITY_MODERATE) return yellow;
@@ -59,6 +28,10 @@ private Color getComplexityColor(int cc){
 	else                                        return red;
 }
 
+@doc
+{
+	This function creates the ovewview of the unit complexity page
+}
 public Figure createComplexityFigure(lrel[Declaration method, int size, int complexity] functionsWithSizeAndComplexity){
 
 	list[Figure] temp = [];
@@ -80,6 +53,14 @@ public Figure createComplexityFigure(lrel[Declaration method, int size, int comp
 	return grid([metricsHeader, [treemap(temp)]]);
 }
 
+@doc
+{
+	This function handles the click event of a single unit box.
+}
 private FProperty unitBoxClick(str hash) = onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage(hash);return true;});
 
+@doc
+{
+	This function handles the click event for returning to the unit complexity overview from a detail view.
+}
 private FProperty detailedViewClick() = onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("unit complexity");return true;});

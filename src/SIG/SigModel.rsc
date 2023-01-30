@@ -15,7 +15,11 @@ import util::Math;
 
 private str formatDate(int x) = size(toString(x)) == 1 ? "0<x>" : "<x>";
 
-// This function will trigger all the metrics and compose the report
+@doc
+{
+	This function will trigger all the metrics and compose the report,
+	it also collects the dashboard data for the visualisation.
+}
 public Metric getSigMetric(loc application){
 
 	int startTime = realTime();
@@ -26,14 +30,14 @@ public Metric getSigMetric(loc application){
 	int volume = calculateVolume(application);
 	
 	// UnitSize
-	lrel[Declaration method, int size] allFunctionsAndSizes = getUnitsAndSize(application);
+	lrel[Declaration method, int size] allFunctionsAndSizes = calculateUnitsAndSize(application);
 	map[str,real] unitSize = computeSIGUnitSizeRank(allFunctionsAndSizes);
 	
 	// Unit tests
 	map[str,int] assertions = calculateUnitTests(application, allFunctionsAndSizes);	
 
 	// Complexity
-	lrel[Declaration, int, int] functionsWithSizeAndComplexity = getCyclomaticComplexity(allFunctionsAndSizes);
+	lrel[Declaration, int, int] functionsWithSizeAndComplexity = getComplexity(allFunctionsAndSizes);
 	map[str,real] unitComplexity = computeSIGUnitComplexityRiskCategories(functionsWithSizeAndComplexity);
 	UnitComplexity complexity = <functionsWithSizeAndComplexity,unitComplexity>;
 
@@ -97,12 +101,4 @@ public Metric getSigMetric(loc application){
 	DashboardData dashboardData = <application.authority,duplication,complexity,unitSize,volume,size(allFunctionsAndSizes),assertions,metricScore,overalScore,executionTime>;
 
 	return <report,dashboardData>;
-}
-
-private lrel[Declaration method, int size] getUnitsAndSize(loc application){
-	return calculateUnitsAndSize(application);
-}
-
-private lrel[Declaration, int, int] getCyclomaticComplexity(allFunctionsAndSizes){
-	return getComplexity(allFunctionsAndSizes);
 }

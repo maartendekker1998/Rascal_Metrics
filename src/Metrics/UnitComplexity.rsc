@@ -21,7 +21,7 @@ public lrel[Declaration, int, int] getComplexity(lrel[Declaration method, int si
 @doc
 {
 	Visits the method and increases the complexity if a match has been found,
-	the cases used here are recommended by a Rascal Core Developer
+	the cases used here are recommended by Davy Landman, a Rascal Core Developer
 	- https://stackoverflow.com/questions/40064886/obtaining-cyclomatic-complexity/40069656#40069656
 }
 private int computeComplexity(Declaration method){

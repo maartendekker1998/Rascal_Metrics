@@ -20,6 +20,10 @@ private Color contentTextColor = nord4;
 private Color headerTextColor = nord4;
 private Color tileSelectedColor = nord9;
 
+@doc
+{
+	This function creates the pages and is respoisible for rendering the dashboard.
+}
 public void renderDashboard(DashboardData dashboardData)
 {
 	currentPage = "dashboard";
@@ -41,6 +45,10 @@ public void renderDashboard(DashboardData dashboardData)
 	}));
 }
 
+@doc
+{
+	This function creates the visual of the dashboard itself.
+}
 private Figure createDashboard(DashboardData dashboardData)
 {
 	DuplicationData duplicaitonData = dashboardData.duplication;
@@ -89,6 +97,10 @@ private Figure createDashboard(DashboardData dashboardData)
 	return grid([[dashboard]]);
 }
 
+@doc
+{
+	This function creates the metric box with its data calculated from the metrics.
+}
 private Figure createMetricBox(MetricScore metricScore)
 {
 	int offset = 20;
@@ -113,6 +125,10 @@ private Figure createMetricBox(MetricScore metricScore)
 		]);
 }
 
+@doc
+{
+	This function creates the overal score box with its data calculated from the metrics.
+}
 private Figure createOverallBox(OveralScore overalScore)
 {
 	int offset = 20;
@@ -138,6 +154,11 @@ private Figure createOverallBox(OveralScore overalScore)
 		]);
 }
 
+@doc
+{
+	This function creates the unit complexity box with its data calculated from the metrics.
+	This box is clickable to show more details about unit complexity
+}
 private Figure createUnitComplexityBox(UnitComplexity unitComplexityData, bool selectable)
 {
 	int offset = 20;
@@ -163,6 +184,10 @@ private Figure createUnitComplexityBox(UnitComplexity unitComplexityData, bool s
 		]);
 }
 
+@doc
+{
+	This function creates the unit size box with its data calculated from the metrics.
+}
 private Figure createUnitSizeBox(map[str,real] unitSizeData)
 {
 	int offset = 20;
@@ -187,6 +212,10 @@ private Figure createUnitSizeBox(map[str,real] unitSizeData)
 		]);
 }
 
+@doc
+{
+	This function creates the lines of code box with its data calculated from the metrics.
+}
 private Figure createLineOfCodeAndFunctionBox(int linesOfCode, int totalFunctions)
 {
 	int offset = 20;
@@ -203,6 +232,11 @@ private Figure createLineOfCodeAndFunctionBox(int linesOfCode, int totalFunction
 		]);
 }
 
+@doc
+{
+	This function creates the duplication box with its data calculated from the metrics.
+	This box is clickable to show more details about duplication
+}
 private Figure createDuplicationBox(DuplicationData duplicaitonData, bool selectable)
 {
 	int offset = 20;
@@ -217,6 +251,10 @@ private Figure createDuplicationBox(DuplicationData duplicaitonData, bool select
 		]);
 }
 
+@doc
+{
+	This function creates the unit test box with its data calculated from the metrics.
+}
 private Figure createUnitTestBox(map[str,int] unitTestData)
 {
 	int offset = 20;
@@ -239,6 +277,14 @@ private Figure createUnitTestBox(map[str,int] unitTestData)
 	return unitTestsGrid;
 }
 
+@doc
+{
+	This function returns a color to show on the dashboard
+	based on its completity level. The color scheme is mostly
+	adopted from the SIG metric thresholds. Since the thresholds
+	does not always fit exacly with a color scheme, the other
+	colors are derived from them.
+}
 private Color getColorByUnitComplexityPercent(map[str,real] complexity, str level)
 {
 	if (level == "simple") return complexity[level] <= 60 ? red :
@@ -256,6 +302,14 @@ private Color getColorByUnitComplexityPercent(map[str,real] complexity, str leve
 	return red;
 }
 
+@doc
+{
+	This function returns a color to show on the dashboard
+	based on its unit size level. The color scheme is mostly
+	adopted from the SIG metric thresholds. Since the thresholds
+	does not always fit exacly with a color scheme, the other
+	colors are derived from them.
+}
 private Color getColorByUnitSizePercent(map[str,real] unitSizeData, str level)
 {
 	if (level == "simple") return unitSizeData[level] <= 44 ? red :
@@ -273,18 +327,34 @@ private Color getColorByUnitSizePercent(map[str,real] unitSizeData, str level)
 	return red;
 }
 
+@doc
+{
+	This function returns a font size based on the score,
+	Rascal seems to make a difference of '+' and '-' while 
+	using the same font size.
+}
 private int getFontSizeFromScore(Rank SIGScore)
 {
 	int score = SIGScore.numericRepresentation;
 	return score < 0 ? 16 : 11;
 }
 
+@doc
+{
+	This function returns a color to show on the dashboard
+	based on its score.
+}
 private Color getColorBySIGScore(Rank SIGScore)
 {
 	int score = SIGScore.numericRepresentation;
 	return score == 2 ? green : (score == 1 ? green : (score == 0 ? orange : red));
 }
 
+@doc
+{
+	This function returns a color to show on the dashboard
+	based on its duplication level.
+}
 private Color getColorByDuplicationPercent(real percent)
 {
 	return (percent <= 3 ? green :
@@ -293,21 +363,54 @@ private Color getColorByDuplicationPercent(real percent)
 		   (percent <= 20 ? red : purple))));
 }
 
+@doc
+{
+	This function sets the current page to a new page triggering
+	the dashboard to switch pages.
+}
 public void switchPage(str pageToSwitchTo)
 {
 	currentPage = pageToSwitchTo;
 }
 
+@doc
+{
+	This function calls the duplication visual to create the page for duplication.
+}
 private Figure createDuplication(DuplicationData duplicationData) = createDuplicationFigure(duplicationData);
 
+@doc
+{
+	This function calls the unit complexity visual to create the page for unit complexity.
+}
 private Figure createUnitComplexity(UnitComplexity complexity) = createComplexityFigure(complexity.functionsWithSizeAndComplexity);
 
+@doc
+{
+	This function allows a pane to highlight when the mouse enteres the box.
+}
 private FProperty enterTile(str page) = onMouseEnter(void(){pageIsSelected[page] = true;});
 
+@doc
+{
+	This function allows a pane to revert highlight when the mouse enteres the box.
+}
 private FProperty leaveTile(str page) = onMouseExit(void(){pageIsSelected[page] = false;});
 
+@doc
+{
+	This function handles the click event of the header.
+}
 private FProperty headerClick = onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("dashboard");return true;});
 
+@doc
+{
+	This function handles the click event of the unit complexity box.
+}
 private FProperty unitComplexityClick = onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("unit complexity");return true;});
 
+@doc
+{
+	This function handles the click event of the duplication box.
+}
 private FProperty duplicationClick = onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("duplication");return true;});

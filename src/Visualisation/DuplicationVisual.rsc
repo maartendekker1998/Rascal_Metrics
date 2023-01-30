@@ -22,6 +22,10 @@ private Color detailHeaderColor = nord1;
 private Color detailBodyColor = nord9;
 private Color contentTextColor = nord4;
 
+@doc
+{
+	This function creates the detail overlay box of a duplication box.
+}
 private DuplicationDetail createDetailOverlayBox(loc file)
 {
 	int totalCodeSize = 0;
@@ -63,6 +67,10 @@ private DuplicationDetail createDetailOverlayBox(loc file)
 	return <box(detailBody,shadow(true)),size(destFiles),hasRelationToItself>;
 }
 
+@doc
+{
+	This function creates the boxes where a duplication is found to in the detail overlay.
+}
 private list[Figure] createDuplicationDestinationBoxes(set[str] destFiles, map[str,list[int]] codeLinesPerDestFile, str file)
 {
 	list[Figure] destinations = [];
@@ -73,6 +81,10 @@ private list[Figure] createDuplicationDestinationBoxes(set[str] destFiles, map[s
 	return destinations;
 }
 
+@doc
+{
+	This function creates the actual code that is found duplicate beloning to the file clicked.
+}
 private void createCodeView(map[rel[str,str],rel[int,int,str]] code)
 {
 	Color codeBackground = nord2;
@@ -111,6 +123,12 @@ private void createCodeView(map[rel[str,str],rel[int,int,str]] code)
 	}
 }
 
+@doc
+{
+	This function creates the duplication overview page. A small 
+	ellipse in the left upper corner can show, meaning the file has
+	also duplication to itself.
+}
 public Figure createDuplicationFigure(DuplicationData duplication)
 {
 	duplicationData = duplication;
@@ -139,6 +157,10 @@ public Figure createDuplicationFigure(DuplicationData duplication)
 	return grid([metricsHeader, [treemap(graph)]]);
 }
 
+@doc
+{
+	This function creates the color of a duplication box in the duplication overview
+}
 private Color getColorByRelationAmount(DuplicationDetail details)
 {
 	int totalRelations = details.totalRelations;
@@ -148,15 +170,46 @@ private Color getColorByRelationAmount(DuplicationDetail details)
 	return red;
 }
 
+@doc
+{
+	This function handles the click event of a duplicated file box in 
+	the detailed overview, it will switch to the code view.
+}
 private void handleDetailedBoxClick(str destFile) = switchPage("sub-<destFile>");
 
+@doc
+{
+	This function handles the click event of a duplication box in the 
+	overview page, this will switch to its detailed page.
+}
 private void showDuplicationDetails(str file) = switchPage(file);
 
+@doc
+{
+	This function handles the click event to return to the dashboard overview.
+}
 private FProperty detailPageClick() = onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("duplication");return true;});
 
+@doc
+{
+	This function handles the click event to show the duplication details.
+}
 private FProperty duplicationBoxClick(str file) = onMouseDown(bool(int b,map[KeyModifier,bool]m){showDuplicationDetails(file);return true;});
 
+@doc
+{
+	This function handles the click event to show the code view details.
+}
 private FProperty detailedBoxClick(str destFile) = onMouseDown(bool(int b,map[KeyModifier,bool]m){handleDetailedBoxClick(destFile);return true;});
 
+@doc
+{
+	This function renders alittle popup showing the filename with the total lines when hovering over a box.
+}
 private FProperty renderPopup(str textData,int lines) = mouseOver(box(text("<textData>\n<lines> lines"),fillColor(lightYellow),grow(1.2),resizable(false)));
+
+@doc
+{
+	This function renders alittle popup showing the filename when hovering over a box.
+}
 private FProperty renderPopup(str textData) = mouseOver(box(text(textData),fillColor(lightYellow),grow(1.2),resizable(false)));

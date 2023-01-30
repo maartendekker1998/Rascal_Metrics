@@ -28,6 +28,14 @@ public int calculateVolume(loc application){
 @doc
 {
 	Calculates the lines of actual code per file, comments do not count
+	There are 2 types of comments to detect in the code
+	- Single line comments
+	    *  a single line comment may still contain code before the start of the comment
+	
+	- Multi line comments
+	    * on the first line, it may contain code before the start of the multiline comment
+	    * on the last line, it may contain code after the end of the multiline comment
+	    * on the lines inbetween, no code can exsist
 }
 public int calculateLOC(list[str] lines, list[LocationDetails] comments, int startIndex){
 
@@ -36,16 +44,6 @@ public int calculateLOC(list[str] lines, list[LocationDetails] comments, int sta
 
 	void incrementLineCounter(){ i += 1; }
 	void incrementLOC(){ LOC += 1; }
-	
-	// we have to detect 2 types of comments in the code
-	
-	//  - single line comments
-	//    *  a single line comment may still contain code before the start of the comment
-	
-	//  - multi line comments
-	//    * on the first line, it may contain code before the start of the multiline comment
-	//    * on the last line, it may contain code after the end of the multiline comment
-	//    * on the lines inbetween, no code can exsist
 	
 	map[int, LocationDetails] singleLineComments = (c.beginline:c | c <- comments, c.beginline == c.endline);
 		
