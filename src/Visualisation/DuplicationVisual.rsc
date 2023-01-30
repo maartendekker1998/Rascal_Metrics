@@ -125,7 +125,7 @@ public Figure createDuplicationFigure(DuplicationData duplication)
 			[space(),space(),space()],
 			[space(),space(),space()]]);
 		
-		detailPages+=(file.file:box(details.body, shrink(0.5,0.9), onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("duplication");return true;})));
+		detailPages+=(file.file:box(details.body, shrink(0.5,0.9), detailPageClick()));
 		Figure src = (details.hasRelationToItself) ?
 			box(relationToItselfBox,fillColor(getColorByRelationAmount(details)), renderPopup(file.file,size(duplicationData.duplication[file])))
 			: box(fillColor(getColorByRelationAmount(details)), renderPopup(file.file,size(duplicationData.duplication[file])));
@@ -151,6 +151,8 @@ private Color getColorByRelationAmount(DuplicationDetail details)
 private void handleDetailedBoxClick(str destFile) = switchPage("sub-<destFile>");
 
 private void showDuplicationDetails(str file) = switchPage(file);
+
+private FProperty detailPageClick() = onMouseDown(bool(int b,map[KeyModifier,bool]m){switchPage("duplication");return true;});
 
 private FProperty duplicationBoxClick(str file) = onMouseDown(bool(int b,map[KeyModifier,bool]m){showDuplicationDetails(file);return true;});
 
