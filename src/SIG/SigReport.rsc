@@ -3,6 +3,7 @@ module SIG::SigReport
 import List;
 import SIG::SigRanking;
 import SIG::SigCategorisation;
+import SIG::SigConstants;
 import Metrics::Volume;
 import Metrics::UnitComplexity;
 import Metrics::Duplication;
@@ -31,6 +32,8 @@ public Metric getSigReport(loc application){
 
 	int startTime = realTime();
 	
+	// First we calculate all the metrics
+	
 	// Duplication
 	DuplicationData duplication = getDuplicationPercentage(calculateDuplication(application));
 	
@@ -48,28 +51,35 @@ public Metric getSigReport(loc application){
 	lrel[Declaration, int, int] functionsWithSizeAndComplexity = getComplexity(allFunctionsAndSizes);
 	map[str,real] unitComplexity = getSIGUnitComplexityRiskCategories(functionsWithSizeAndComplexity);
 	UnitComplexity complexity = <functionsWithSizeAndComplexity,unitComplexity>;
+	
+	// Print the results of the metrics
 
 	str report = "<application.authority>\n";
+	
 	report += "----\n\n";
 	report += "lines of code:   <volume>\n";
 	report += "number of units: <size(allFunctionsAndSizes)>\n\n";
 	
 	report += "unit size: \n";
-	report += "  * simple:    <unitSize["simple"   ]>%\n";
-	report += "  * moderate:  <unitSize["moderate" ]>%\n";
-	report += "  * high:      <unitSize["high"     ]>%\n";
-	report += "  * very high: <unitSize["very high"]>%\n\n";
+	
+	report += "  * simple    : <unitSize[SIG_SIMPLE   ]>%\n";
+	report += "  * moderate  : <unitSize[SIG_MODERATE ]>%\n";
+	report += "  * high      : <unitSize[SIG_HIGH     ]>%\n";
+	report += "  * very high : <unitSize[SIG_VERY_HIGH]>%\n\n";
 	
 	report += "unit complexity: \n";
 
-	report += "  * simple:    <unitComplexity["simple"   ]>%\n";
-	report += "  * moderate:  <unitComplexity["moderate" ]>%\n";
-	report += "  * high:      <unitComplexity["high"     ]>%\n";
-	report += "  * very high: <unitComplexity["very high"]>%\n\n";
+	report += "  * simple    : <unitComplexity[SIG_SIMPLE   ]>%\n";
+	report += "  * moderate  : <unitComplexity[SIG_MODERATE ]>%\n";
+	report += "  * high      : <unitComplexity[SIG_HIGH     ]>%\n";
+	report += "  * very high : <unitComplexity[SIG_VERY_HIGH]>%\n\n";
+	
 	report += "unit testing:\n";
-	report += "  * asserts:   <assertions["assert"]>\n";
-	report += "  * fails:     <assertions["fail"]>\n";
-	report += "  * unittests: <assertions["tests"]>\n\n";
+	
+	report += "  * asserts   : <assertions["assert"]>\n";
+	report += "  * fails     : <assertions["fail"]>\n";
+	report += "  * unittests : <assertions["tests"]>\n\n";
+	
 	report += "duplication: <duplication.percent>%\n\n";
 	
 	//Get the ranks
@@ -78,12 +88,13 @@ public Metric getSigReport(loc application){
 	Rank unitComplexityRank = getSIGUnitComplexityRank(unitComplexity);
 	Rank duplicationRank    = getSIGDuplicationRank(duplication.percent);
 	
-	MetricScore metricScore = <volumeRank,unitSizeRank,unitComplexityRank,duplicationRank>;
-	
+	//Print the ranks
 	report += "volume score          : <volumeRank.stringRepresentation>\n";
 	report += "unit size score       : <unitSizeRank.stringRepresentation>\n";
 	report += "unit complexity score : <unitComplexityRank.stringRepresentation>\n";
 	report += "duplication score     : <duplicationRank.stringRepresentation>\n\n";
+	
+	// Compute the averaged ranks per category
 	
 	list[Rank] analyzabilityArguments = [volumeRank, duplicationRank, unitSizeRank];
 	list[Rank] changeabilityArguments = [unitComplexityRank, duplicationRank];
@@ -93,14 +104,16 @@ public Metric getSigReport(loc application){
 	Rank changeabilityRank = calculateWeigedAverage(changeabilityArguments);
 	Rank testabilityRank   = calculateWeigedAverage(testabilityArguments);
 	
+	// Print the averaged ranks
+	
 	report += "analysability score   : <analyzebilityRank.stringRepresentation>\n";
 	report += "changeability score   : <changeabilityRank.stringRepresentation>\n";
 	report += "testability score     : <testabilityRank.stringRepresentation>\n\n";
 	
+	// Compute and print the final rank
+	
 	list[Rank] overallArguments = [analyzebilityRank, changeabilityRank, testabilityRank];
 	Rank overallRank = calculateWeigedAverage(overallArguments);
-	OveralScore overalScore = <analyzebilityRank,changeabilityRank,testabilityRank,overallRank>;
-	
 	report += "overall maintainability score: <overallRank.stringRepresentation>";
 	
 	int endTime = ((realTime()-startTime)/1000);
@@ -109,6 +122,9 @@ public Metric getSigReport(loc application){
 	int seconds = endTime % 60;
 	str executionTime = "Execution time: <formatDate(hours)>:<formatDate(minutes)>:<formatDate(seconds)>";
 	
+	//Prepare the data neccesary for the visualisations
+	MetricScore metricScore = <volumeRank,unitSizeRank,unitComplexityRank,duplicationRank>;
+	OveralScore overalScore = <analyzebilityRank,changeabilityRank,testabilityRank,overallRank>;	
 	DashboardData dashboardData = <application.authority,duplication,complexity,unitSize,volume,size(allFunctionsAndSizes),assertions,metricScore,overalScore,executionTime>;
 
 	return <report,dashboardData>;

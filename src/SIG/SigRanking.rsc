@@ -8,13 +8,6 @@ import DataTypes::Rank;
 import SIG::SigConstants;
 import SIG::SigCategorisation;
 
-
-private Rank plusplus = <"++",  2>;
-private Rank plus     = <"+" ,  1>;
-private Rank neutral  = <"o" ,  0>;
-private Rank min      = <"-" , -1>;
-private Rank minmin   = <"--", -2>;
-
 @doc
 {
 	Gets the volume rank based on the lines of code respecting the SIG metrics

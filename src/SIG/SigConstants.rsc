@@ -1,10 +1,19 @@
 module SIG::SigConstants
 
+import DataTypes::Rank;
+
 //Complexity identifiers
 public str SIG_SIMPLE    = "simple";
 public str SIG_MODERATE  = "moderate";
 public str SIG_HIGH      = "high";
 public str SIG_VERY_HIGH = "very high";
+
+// Sig Ranks
+public Rank plusplus = <"++",  2>;
+public Rank plus     = <"+" ,  1>;
+public Rank neutral  = <"o" ,  0>;
+public Rank min      = <"-" , -1>;
+public Rank minmin   = <"--", -2>;
 
 //SIG Total Volume ranking values
 public int SIG_JAVA_KLOC_PLUS_PLUS = 66;
@@ -40,4 +49,3 @@ public map[str,int] MAX_UNIT_COMPLEXITY_THRESHOLDS_PLUS_PLUS = (SIG_MODERATE : 2
 public map[str,int] MAX_UNIT_COMPLEXITY_THRESHOLDS_PLUS      = (SIG_MODERATE : 30, SIG_HIGH : 5 , SIG_VERY_HIGH : 0);
 public map[str,int] MAX_UNIT_COMPLEXITY_THRESHOLDS_O         = (SIG_MODERATE : 40, SIG_HIGH : 10, SIG_VERY_HIGH : 0);
 public map[str,int] MAX_UNIT_COMPLEXITY_THRESHOLDS_MIN       = (SIG_MODERATE : 50, SIG_HIGH : 15, SIG_VERY_HIGH : 5);
-

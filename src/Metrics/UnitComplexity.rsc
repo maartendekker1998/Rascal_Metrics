@@ -22,7 +22,12 @@ public lrel[Declaration, int, int] getComplexity(lrel[Declaration method, int si
 {
 	Visits the method and increases the complexity if a match has been found,
 	the cases used here are recommended by Davy Landman, a Rascal Core Developer
-	- https://stackoverflow.com/questions/40064886/obtaining-cyclomatic-complexity/40069656#40069656
+	
+	the source:
+	
+	Davy Landman, Alexander Serebrenik, and Jurgen Vinju. “Empirical Analysis 
+	of the Relationship between CC and SLOC in a Large Corpus of Java Methods”. 
+	In: Sept. 2014. doi: 10.1109/ICSME.2014.44.
 }
 private int computeComplexity(Declaration method){
 
