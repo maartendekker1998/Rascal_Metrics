@@ -1,7 +1,7 @@
 module Helpers::Documentation
 
 import DataTypes::LocationDetails;
-import ProjectLoader::Loader;
+import Helpers::Loader;
 import lang::java::jdt::m3::Core;
 import String;
 

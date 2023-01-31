@@ -2,7 +2,7 @@ module Metrics::UnitSize
 
 import Helpers::Documentation;
 import DataTypes::LocationDetails;
-import ProjectLoader::Loader;
+import Helpers::Loader;
 import lang::java::m3::AST;
 import IO;
 import String;

@@ -1,7 +1,7 @@
 module Metrics::UnitTestCoverage
 
 import lang::java::m3::AST;
-import ProjectLoader::Loader;
+import Helpers::Loader;
 
 private map[loc,Declaration] unitTestFiles = ();
 

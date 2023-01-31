@@ -23,7 +23,7 @@ public void main(str arg)
 public void main()
 {
 	println("No argument given, defaulting to smallsql\n");
-	loc application = |project://smallsql/|;
+	loc application = |project://Jabberpoint/|;
 	calculate(application);
 }
 

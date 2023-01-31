@@ -7,7 +7,7 @@ import List;
 import String;
 import Relation;
 import util::Resources;
-import ProjectLoader::Loader;
+import Helpers::Loader;
 import DataTypes::LocationDetails;
 
 private alias FileLine = tuple[loc file, int line];

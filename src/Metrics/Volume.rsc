@@ -2,7 +2,7 @@ module Metrics::Volume
 
 import String;
 import lang::java::jdt::m3::Core;
-import ProjectLoader::Loader;
+import Helpers::Loader;
 import util::Resources;
 import Helpers::Documentation;
 import DataTypes::LocationDetails;

@@ -1,4 +1,4 @@
-module ProjectLoader::Loader
+module Helpers::Loader
 
 import lang::java::jdt::m3::Core;
 import util::Resources;
