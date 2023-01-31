@@ -124,4 +124,3 @@ private map[loc, list[str]] getFilesPerLocation(loc application){
 	
 	return files;
 }
-

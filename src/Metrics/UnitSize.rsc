@@ -49,13 +49,3 @@ private tuple[Declaration method, int size] addFunction(function, map[loc, list[
 	tuple[Declaration method, int size] DeclarationAndSize = <function, volume>;
 	return DeclarationAndSize;
 }
-
-
-
-
-
-
-
-
-
-

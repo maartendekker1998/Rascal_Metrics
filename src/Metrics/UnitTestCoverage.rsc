@@ -67,4 +67,3 @@ private map[str,int] countUnitTests()
 	}
 	return ("tests":unitTestFunctions);
 }
-

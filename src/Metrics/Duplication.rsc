@@ -131,8 +131,3 @@ public DuplicationData getDuplicationPercentage(tuple[int,int,Duplication] dupli
 	real totalCodeLength = toReal(duplication[1]);
 	return <roundTwoDigits((totalDuplicateLines/totalCodeLength)*100),duplication[2]>;
 }
-
-
-
-
-

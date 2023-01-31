@@ -120,11 +120,3 @@ public Rank calculateWeigedAverage(ranks){
 	elseif (result == -1) return min;
 	elseif (result == -2) return minmin;
 }
-
-
-
-
-
-
-
-
