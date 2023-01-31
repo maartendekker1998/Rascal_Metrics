@@ -1,9 +1,9 @@
 module Main
 
 import IO;
-import SIG::SigModel;
+import SIG::SigReport;
 import Visualisation::Dashboard;
-import DataTypes::LocationDetails;
+import DataTypes::Metric;
 
 @doc
 {
@@ -23,7 +23,7 @@ public void main(str arg)
 public void main()
 {
 	println("No argument given, defaulting to smallsql\n");
-	loc application = |project://Jabberpoint/|;
+	loc application = |project://smallsql/|;
 	calculate(application);
 }
 
@@ -34,7 +34,7 @@ public void main()
 }
 private void calculate(loc application)
 {
-	Metric metric = getSigMetric(application);
+	Metric metric = getSigReport(application);
 	println(metric.report);
 	renderDashboard(metric.dashboard);
 }

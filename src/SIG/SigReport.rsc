@@ -1,7 +1,8 @@
-module SIG::SigModel
+module SIG::SigReport
 
 import List;
 import SIG::SigRanking;
+import SIG::SigCategorisation;
 import Metrics::Volume;
 import Metrics::UnitComplexity;
 import Metrics::Duplication;
@@ -9,6 +10,12 @@ import Metrics::UnitSize;
 import Metrics::UnitTestCoverage;
 import lang::java::m3::AST;
 import DataTypes::LocationDetails;
+import DataTypes::DuplicationDetails;
+import DataTypes::UnitComplexity;
+import DataTypes::Rank;
+import DataTypes::Metric;
+import DataTypes::Score;
+import DataTypes::DashboardData;
 import String;
 import util::Benchmark;
 import util::Math;
@@ -20,25 +27,26 @@ private str formatDate(int x) = size(toString(x)) == 1 ? "0<x>" : "<x>";
 	This function will trigger all the metrics and compose the report,
 	it also collects the dashboard data for the visualisation.
 }
-public Metric getSigMetric(loc application){
+public Metric getSigReport(loc application){
 
 	int startTime = realTime();
+	
 	// Duplication
-	DuplicationData duplication = getDuplicationPercent(calculateDuplication(application));
+	DuplicationData duplication = getDuplicationPercentage(calculateDuplication(application));
 	
 	// Volume
 	int volume = calculateVolume(application);
 	
 	// UnitSize
 	lrel[Declaration method, int size] allFunctionsAndSizes = calculateUnitsAndSize(application);
-	map[str,real] unitSize = computeSIGUnitSizeRank(allFunctionsAndSizes);
+	map[str,real] unitSize = getSIGUnitSizeRiskCategories(allFunctionsAndSizes);
 	
 	// Unit tests
 	map[str,int] assertions = calculateUnitTests(application, allFunctionsAndSizes);	
 
 	// Complexity
 	lrel[Declaration, int, int] functionsWithSizeAndComplexity = getComplexity(allFunctionsAndSizes);
-	map[str,real] unitComplexity = computeSIGUnitComplexityRiskCategories(functionsWithSizeAndComplexity);
+	map[str,real] unitComplexity = getSIGUnitComplexityRiskCategories(functionsWithSizeAndComplexity);
 	UnitComplexity complexity = <functionsWithSizeAndComplexity,unitComplexity>;
 
 	str report = "<application.authority>\n";
@@ -64,16 +72,18 @@ public Metric getSigMetric(loc application){
 	report += "  * unittests: <assertions["tests"]>\n\n";
 	report += "duplication: <duplication.percent>%\n\n";
 	
+	//Get the ranks
 	Rank volumeRank         = getSIGVolumeRank(volume);
 	Rank unitSizeRank       = getSIGUnitSizeRank(unitSize);
-	Rank unitComplexityRank = getSIGUnitSizeRank(unitComplexity);
+	Rank unitComplexityRank = getSIGUnitComplexityRank(unitComplexity);
 	Rank duplicationRank    = getSIGDuplicationRank(duplication.percent);
+	
 	MetricScore metricScore = <volumeRank,unitSizeRank,unitComplexityRank,duplicationRank>;
 	
-	report += "volume score: <volumeRank.stringRepresentation>" + "\n";
-	report += "unit size score: <unitSizeRank.stringRepresentation>\n";
-	report += "unit complexity score: <unitComplexityRank.stringRepresentation>\n";
-	report += "duplication score: <duplicationRank.stringRepresentation>\n\n";
+	report += "volume score          : <volumeRank.stringRepresentation>\n";
+	report += "unit size score       : <unitSizeRank.stringRepresentation>\n";
+	report += "unit complexity score : <unitComplexityRank.stringRepresentation>\n";
+	report += "duplication score     : <duplicationRank.stringRepresentation>\n\n";
 	
 	list[Rank] analyzabilityArguments = [volumeRank, duplicationRank, unitSizeRank];
 	list[Rank] changeabilityArguments = [unitComplexityRank, duplicationRank];
@@ -83,9 +93,9 @@ public Metric getSigMetric(loc application){
 	Rank changeabilityRank = calculateWeigedAverage(changeabilityArguments);
 	Rank testabilityRank   = calculateWeigedAverage(testabilityArguments);
 	
-	report += "analysability score: <analyzebilityRank.stringRepresentation>\n";
-	report += "changeability score: <changeabilityRank.stringRepresentation>\n";
-	report += "testability score: <testabilityRank.stringRepresentation>\n\n";
+	report += "analysability score   : <analyzebilityRank.stringRepresentation>\n";
+	report += "changeability score   : <changeabilityRank.stringRepresentation>\n";
+	report += "testability score     : <testabilityRank.stringRepresentation>\n\n";
 	
 	list[Rank] overallArguments = [analyzebilityRank, changeabilityRank, testabilityRank];
 	Rank overallRank = calculateWeigedAverage(overallArguments);
@@ -98,6 +108,7 @@ public Metric getSigMetric(loc application){
 	int minutes = (endTime % 3600) /60;
 	int seconds = endTime % 60;
 	str executionTime = "Execution time: <formatDate(hours)>:<formatDate(minutes)>:<formatDate(seconds)>";
+	
 	DashboardData dashboardData = <application.authority,duplication,complexity,unitSize,volume,size(allFunctionsAndSizes),assertions,metricScore,overalScore,executionTime>;
 
 	return <report,dashboardData>;

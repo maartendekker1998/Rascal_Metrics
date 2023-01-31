@@ -1,4 +1,4 @@
-module Visualisation::ComplexityVisual
+module Visualisation::MetricVisualisation::ComplexityVisual
 
 import IO;
 import SIG::SigModel;
@@ -7,7 +7,7 @@ import vis::Render;
 import vis::KeySym;
 import vis::Figure;
 import Visualisation::Dashboard;
-import DataTypes::Color;
+import Visualisation::Theme::Color;
 
 private int SIG_MAX_COMPLEXITY_LOW       = 10;
 private int SIG_MAX_COMPLEXITY_MODERATE  = 20;

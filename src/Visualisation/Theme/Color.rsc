@@ -1,4 +1,4 @@
-module DataTypes::Color
+module Visualisation::Theme::Color
 
 import vis::Figure;
 

@@ -7,8 +7,12 @@ import List;
 import String;
 import Relation;
 import util::Resources;
+import util::Math;
 import Helpers::Loader;
+import Helpers::Math;
 import DataTypes::LocationDetails;
+import DataTypes::DuplicationDetails;
+
 
 private alias FileLine = tuple[loc file, int line];
 
@@ -115,6 +119,17 @@ private void calculateDuplicationForFile(list[str] code, loc file)
 			}
         }
     }
+}
+
+@doc
+{
+	Creates a percent for duplication
+}
+public DuplicationData getDuplicationPercentage(tuple[int,int,Duplication] duplication)
+{
+	real totalDuplicateLines = toReal(duplication[0]);
+	real totalCodeLength = toReal(duplication[1]);
+	return <roundTwoDigits((totalDuplicateLines/totalCodeLength)*100),duplication[2]>;
 }
 
 

@@ -3,10 +3,14 @@ module Visualisation::Dashboard
 import vis::Figure;
 import vis::Render;
 import vis::KeySym;
-import Visualisation::ComplexityVisual;
-import Visualisation::DuplicationVisual;
-import DataTypes::LocationDetails;
-import DataTypes::Color;
+import Visualisation::MetricVisualisation::ComplexityVisual;
+import Visualisation::MetricVisualisation::DuplicationVisual;
+import Visualisation::Theme::Color;
+import DataTypes::DashboardData;
+import DataTypes::Rank;
+import DataTypes::Score;
+import DataTypes::UnitComplexity;
+import DataTypes::DuplicationDetails;
 
 public map[str,Figure] pages = ();
 public list[Figure] metricsHeader;

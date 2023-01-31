@@ -1,4 +1,4 @@
-module Visualisation::DuplicationVisual
+module Visualisation::MetricVisualisation::DuplicationVisual
 
 import vis::Figure;
 import vis::Render;
@@ -11,9 +11,9 @@ import List;
 import String;
 import Relation;
 import Metrics::Duplication;
-import DataTypes::LocationDetails;
+import DataTypes::DuplicationDetails;
 import Visualisation::Dashboard;
-import DataTypes::Color;
+import Visualisation::Theme::Color;
 
 private alias DuplicationDetail = tuple[Figure body, int totalRelations, bool hasRelationToItself];
 
